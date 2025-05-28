@@ -1,0 +1,64 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+
+model Place {
+  id          Int       @id @default(autoincrement())
+  name        String
+  latitude    Float
+  longitude   Float
+  imageUrl    String
+  description String
+  likes       Like[]
+  comments    Comment[]
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  profilePic   String?
+  role         Role      @default(FREE)
+  balance      Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  Like         Like[]
+  Comment      Comment[]
+}
+
+enum Role {
+  ADMIN
+  FREE
+  BASIC
+  PRO
+  ULTIMATE
+}
+
+model Like {
+  id      Int    @id @default(autoincrement())
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  place   Place  @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  userId  String // ✅ FIXED
+  placeId Int
+
+  @@unique([userId, placeId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  place     Place    @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  userId    String // ✅ FIXED
+  placeId   Int
+}
