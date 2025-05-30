@@ -12,9 +12,9 @@ const EarthSphere = () => {
 
     // Load textures
     const [dayTexture, nightTexture, specularCloudsTexture] = useTexture([
-        "/earth.jpg",    
-        "/nightEarth.jpg",  
-        "/clouds.jpg"
+        "/earth.jpeg",    
+        "/nightEarth.jpeg",  
+        "/clouds.jpeg"
     ]);
 
     specularCloudsTexture.colorSpace = THREE.NoColorSpace;

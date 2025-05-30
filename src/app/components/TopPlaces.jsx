@@ -14,9 +14,8 @@ const TopPlaces = ({ places }) => {
         );
     }
 
-    const topPlaces = [...places]
-        .sort((a, b) => b.likes.length - a.likes.length)
-        .slice(0, 3);
+    // Get first 3 created (assuming order = created)
+    const featuredPlaces = places.slice(0, 3);
 
     return (
         <section className="px-6 py-16 md:px-20 lg:px-32 backdrop-blur-xs relative z-10">
@@ -26,11 +25,11 @@ const TopPlaces = ({ places }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
             >
-                🌌 Top Explorações
+                ✨ Destaques Iniciais
             </motion.h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                {topPlaces.map((place, index) => (
+                {featuredPlaces.map((place, index) => (
                     <Link key={place.id} href={`/place/${place.id}`}>
                         <motion.div
                             initial={{ opacity: 0, y: 50 }}

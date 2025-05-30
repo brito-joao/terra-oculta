@@ -72,24 +72,31 @@ export default function StartExploring() {
             {/* Google Map Section */}
             <InteractiveMap places={places} />
             {/* Places List Section */}
-            <section className="p-12">
+            <section className="px-4 sm:px-6 md:px-12 lg:px-20 py-12">
                 <motion.h2
-                    className="text-4xl font-bold text-center text-[#A259FF]"
+                    className="text-3xl sm:text-4xl font-bold text-center text-[#A259FF] mb-8"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 1, delay: 0.5 }}
                 >
                     Últimas Descobertas
                 </motion.h2>
-                <div className="p-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {places.slice().reverse().map((place) => (
-                        <PlaceCard key={place.id} place={place} onLike={handleLike} onComment={handleComment} />
+                        <PlaceCard
+                            key={place.id}
+                            place={place}
+                            onLike={handleLike}
+                            onComment={handleComment}
+                        />
                     ))}
                 </div>
             </section>
 
 
-            
+
+
             {/* Futuristic Info Section */}
             <motion.section className="p-12 text-center bg-[#0ABDC6] text-black rounded-lg mx-6 shadow-2xl"
                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}
@@ -100,7 +107,7 @@ export default function StartExploring() {
             </motion.section>
 
             {/* Footer */}
-            <Footer/>
+            <Footer />
         </motion.div>
     );
 }

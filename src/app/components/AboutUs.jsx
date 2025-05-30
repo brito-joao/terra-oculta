@@ -9,8 +9,8 @@ import Footer from "../components/footer";
 import { OtherBackground } from "../components/Background";
 
 const founders = [
-    { name: "Rafa", img: "/rafa.jpg", role: "Digital Crusader" },
-    { name: "João", img: "/joao.jpg", role: "Mastermind Tactician" },
+    { name: "Rafa", img: "/rafa.jpeg", role: "Digital Crusader" },
+    { name: "João", img: "/joao.jpeg", role: "Mastermind Tactician" },
     { name: "Israel Bapolo", img: "/defaultUser.png", role: "Art Warrior" },
 ];
 

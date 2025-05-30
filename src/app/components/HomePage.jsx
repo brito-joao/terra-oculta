@@ -3,13 +3,14 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-
+import { Analytics } from "@vercel/analytics/next"
 import Typewriter from "typewriter-effect";
 import Navbar from "../components/nav";
 import Footer from "../components/footer";
 import Slideshow from "../components/slideshow";
 import PlaceCard from "../components/PlaceCard";
 import TopPlaces from "../components/TopPlaces";
+import MapExplain from "../components/MapExplain";
 import BroacastLogos from "../components/BroadcastLogos";
 import ExplorationCategories from "../components/Categories";
 import { ThreeBackground } from "../components/Background";
@@ -31,7 +32,6 @@ const HomePage = () => {
     const [places, setPlaces] = useState([]);
     const [user, setUser] = useState(null);
 
-    // Fetch user right away
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -46,14 +46,13 @@ const HomePage = () => {
         fetchUser();
     }, []);
 
-    // Delay fetching places to reduce load time pressure
     useEffect(() => {
         const timeout = setTimeout(() => {
             fetch("/api/places")
                 .then((res) => res.json())
                 .then((data) => setPlaces(Array.isArray(data) ? data : Object.values(data)))
                 .catch((err) => console.error("Error fetching places:", err));
-        }, 1000); // Delay by 1 second
+        }, 1000);
         return () => clearTimeout(timeout);
     }, []);
 
@@ -125,7 +124,7 @@ const HomePage = () => {
                     transition={{ duration: 1 }}
                 >
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight bg-gradient-to-r from-[#A259FF] to-[#0ABDC6] text-transparent bg-clip-text">
-                        Discover Unique Places
+                    Explorando o invisível.
                     </h1>
                     <Typewriter
                         options={{
@@ -143,18 +142,20 @@ const HomePage = () => {
                     </Button>
                 </motion.div>
 
-
                 <Slideshow places={places} />
-
             </header>
 
-
-            {/* Top Places (delayed render is possible too) */}
+            {/* Top Places Section */}
             {places.length > 0 && <TopPlaces places={places} />}
 
-            <section className="p-12">
+            {/* Map Explanation Section */}
+            <MapExplain />
+
+            {/* Latest Discoveries Section */}
+            <section className="px-4 sm:px-6 md:px-12 lg:px-20 py-12 bg-[#ffffff0a] backdrop-blur-md rounded-xl">
+
                 <motion.h2
-                    className="text-4xl font-bold text-center text-purple-400"
+                    className="text-3xl sm:text-4xl font-bold text-center text-purple-400 mb-10"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 1, delay: 0.5 }}
@@ -162,7 +163,7 @@ const HomePage = () => {
                     Últimas Descobertas
                 </motion.h2>
 
-                <div className="p-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {places.slice().reverse().map((place) => (
                         <PlaceCard
                             key={place.id}
@@ -172,13 +173,12 @@ const HomePage = () => {
                             onComment={handleComment}
                         />
                     ))}
-
                 </div>
             </section>
 
 
-
             <Footer />
+            <Analytics />
         </motion.div>
     );
 };
