@@ -11,7 +11,7 @@ import { OtherBackground } from "../components/Background";
 const founders = [
     { name: "Rafa", img: "/rafa.jpeg", role: "Digital Crusader" },
     { name: "João", img: "/joao.jpeg", role: "Mastermind Tactician" },
-    { name: "Israel Bapolo", img: "/defaultUser.png", role: "Art Warrior" },
+    { name: "Israel Bapolo", img: "https://i.imgur.com/RN0ZlKu.jpg", role: "Art Warrior" },
 ];
 
 const team = [

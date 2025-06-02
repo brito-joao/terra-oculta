@@ -8,7 +8,7 @@ import { UserCircle2 } from "lucide-react";
 export default function Navbar() {
     const router = useRouter();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] = useState({ profilePic: "/default-profile.jpg" });
+    const [user, setUser] = useState({ profilePic: "https://i.imgur.com/3zxQ2si.png" });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -87,7 +87,7 @@ export default function Navbar() {
                         className="cursor-pointer rounded-full border-2 border-[#A259FF] hover:shadow-[0_0_10px_#A259FF] transition-all duration-300 transform hover:scale-105"
                     >
                         <Image
-                            src={user.profilePic || "/defaultUser.png"}
+                            src={user.profilePic || "https://i.imgur.com/3zxQ2si.png"}
                             alt="Profile Picture"
                             width={42}
                             height={42}

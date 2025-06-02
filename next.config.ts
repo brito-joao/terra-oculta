@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['upload.wikimedia.org'],
+    domains: ['upload.wikimedia.org','i.imgur.com'],
+    
   },
   webpack(config, { isServer }) {
     config.infrastructureLogging = {

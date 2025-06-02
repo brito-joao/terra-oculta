@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Navbar from "../components/nav";
-import { ThreeBackground } from "../components/Background";
 import Footer from "../components/footer";
+import { ThreeBackground } from "../components/Background";
 import PlaceCard from "./PlaceCard";
 
 export default function NovasDescobertas() {
@@ -16,11 +16,11 @@ export default function NovasDescobertas() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/auth/me", { method: "GET", credentials: "include" });
-        if (!res.ok) throw new Error("User not authenticated");
+        const res = await fetch("/api/auth/me", { credentials: "include" });
+        if (!res.ok) throw new Error();
         const data = await res.json();
         setUser(data.user);
-      } catch (error) {
+      } catch {
         setUser(null);
       }
     };
@@ -64,7 +64,7 @@ export default function NovasDescobertas() {
         alert(data.error);
       }
     } catch (error) {
-      console.error("Error liking place:", error);
+      console.error("Like error:", error);
     }
   };
 
@@ -87,13 +87,13 @@ export default function NovasDescobertas() {
         alert(data.error);
       }
     } catch (error) {
-      console.error("Error adding comment:", error);
+      console.error("Comment error:", error);
     }
   };
 
   return (
     <motion.div
-      className="relative min-h-screen  text-white font-sans overflow-hidden"
+      className="relative min-h-screen text-white font-sans"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
@@ -104,58 +104,62 @@ export default function NovasDescobertas() {
 
       <Navbar />
 
-      <header className="text-center py-24 px-6">
+      <header className="text-center py-12 px-4">
         <motion.h1
-          className="text-5xl md:text-6xl font-black bg-gradient-to-r from-[#A259FF] to-[#0ABDC6] text-transparent bg-clip-text drop-shadow-md"
-          initial={{ y: -40, opacity: 0 }}
+          className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[#A259FF] to-[#0ABDC6] text-transparent bg-clip-text"
+          initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1 }}
         >
-          NOVAS DESCOBERTAS
+          Novas Descobertas
         </motion.h1>
         <motion.p
-          className="mt-4 text-gray-400 text-lg max-w-2xl mx-auto italic"
-          initial={{ y: 40, opacity: 0 }}
+          className="mt-4 text-gray-400 text-base max-w-xl mx-auto italic"
+          initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.2 }}
         >
-          {"[ Transmissão Iniciada ]"} — Coordenadas recebidas, imagens decodificadas. Novas anomalias detectadas via satélite.
+          [Transmissão Iniciada] — Coordenadas recebidas. Novas anomalias detectadas via satélite.
         </motion.p>
       </header>
 
-      <section className="px-6 md:px-12 pb-24">
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          {places
-            .slice()
-            .reverse()
-            .map((place, index) => (
-              <motion.div
-                key={place.id}
-                className="hover:scale-[1.02] hover:shadow-xl transition-transform duration-300 rounded-2xl bg-[#111111] border border-[#1a1a1a] p-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-              >
+      <section className="px-4 sm:px-6 pb-16 space-y-12 max-w-3xl mx-auto">
+        {places
+          .slice()
+          .reverse()
+          .map((place, index) => (
+            <motion.div
+              key={place.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="rounded-xl overflow-hidden bg-[#111] border border-white/10 shadow-lg"
+            >
+              {/* Place Image */}
+              <img
+                src={place.imageUrl}
+                alt={place.name}
+                className="w-full h-[400px] object-cover"
+              />
+
+              {/* Place Content */}
+              <div className="p-6 space-y-4">
+                <h2 className="text-2xl font-bold text-white">{place.name}</h2>
+                <p className="text-sm text-gray-400 whitespace-pre-line">
+                  {place.description?.length > 300
+                    ? place.description.slice(0, 300) + "..."
+                    : place.description}
+                </p>
+
+                {/* Interactions */}
                 <PlaceCard
                   place={place}
                   userId={user?.id}
                   onLike={handleLike}
                   onComment={handleComment}
                 />
-              </motion.div>
-            ))}
-        </motion.div>
-
-        <div className="mt-24 text-center">
-          <p className="text-sm text-gray-600 uppercase tracking-widest">
-            {`Última atualização: ${new Date().toLocaleDateString("pt-PT")}`}
-          </p>
-        </div>
+              </div>
+            </motion.div>
+          ))}
       </section>
 
       <Footer />

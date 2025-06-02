@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import AddPlaceForm from "../components/AddPlaceForm";
 import AdminUserManagement from "./adminUsers";
-import PlaceListAdmin from "./PlaceListAdmin";
-import CommentListAdmin from "./CommentListAdmin";
 
+import CommentListAdmin from "./CommentListAdmin";
+import PlaceListAdmin from "./AdminPlacesManage";
 export default function AdminPage() {
   const [user, setUser] = useState(null);
   const [newAdmin, setNewAdmin] = useState({ name: "", email: "", password: "" });
