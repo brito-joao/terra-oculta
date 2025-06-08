@@ -11,6 +11,8 @@ import PlaceCard from "./PlaceCard";
 export default function NovasDescobertas() {
   const [places, setPlaces] = useState([]);
   const [user, setUser] = useState(null);
+  const [filter, setFilter] = useState("");
+  const [sortBy, setSortBy] = useState("date"); // "date" | "likes"
   const router = useRouter();
 
   useEffect(() => {
@@ -91,6 +93,20 @@ export default function NovasDescobertas() {
     }
   };
 
+  const filteredAndSortedPlaces = places
+    .filter((place) =>
+      place.name.toLowerCase().includes(filter.toLowerCase()) ||
+      place.description?.toLowerCase().includes(filter.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortBy === "likes") {
+        return (b.likes || 0) - (a.likes || 0);
+      } else {
+        return Number(b.id) - Number(a.id); // Mais recentes primeiro
+      }
+    });
+    
+
   return (
     <motion.div
       className="relative min-h-screen text-white font-sans"
@@ -120,13 +136,37 @@ export default function NovasDescobertas() {
         >
           [Transmissão Iniciada] — Coordenadas recebidas. Novas anomalias detectadas via satélite.
         </motion.p>
+
+        {/* Filter and Sort Controls */}
+        <motion.div
+          className="mt-6 max-w-xl mx-auto flex flex-col sm:flex-row gap-4 justify-center"
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <input
+            type="text"
+            placeholder="Filtrar por nome ou descrição..."
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="w-full sm:w-2/3 px-4 py-2 rounded-lg bg-[#1a1a1a] border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#A259FF] transition"
+          />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="w-full sm:w-1/3 px-4 py-2 rounded-lg bg-[#1a1a1a] border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#0ABDC6] transition"
+          >
+            <option value="date">Mais Recentes</option>
+            <option value="likes">Mais Curtidos</option>
+          </select>
+        </motion.div>
       </header>
 
       <section className="px-4 sm:px-6 pb-16 space-y-12 max-w-3xl mx-auto">
-        {places
-          .slice()
-          .reverse()
-          .map((place, index) => (
+        {filteredAndSortedPlaces.length === 0 ? (
+          <p className="text-center text-gray-500">Nenhum resultado encontrado.</p>
+        ) : (
+          filteredAndSortedPlaces.map((place, index) => (
             <motion.div
               key={place.id}
               initial={{ opacity: 0, y: 20 }}
@@ -134,14 +174,11 @@ export default function NovasDescobertas() {
               transition={{ delay: index * 0.1 }}
               className="rounded-xl overflow-hidden bg-[#111] border border-white/10 shadow-lg"
             >
-              {/* Place Image */}
               <img
                 src={place.imageUrl}
                 alt={place.name}
                 className="w-full h-[400px] object-cover"
               />
-
-              {/* Place Content */}
               <div className="p-6 space-y-4">
                 <h2 className="text-2xl font-bold text-white">{place.name}</h2>
                 <p className="text-sm text-gray-400 whitespace-pre-line">
@@ -149,8 +186,6 @@ export default function NovasDescobertas() {
                     ? place.description.slice(0, 300) + "..."
                     : place.description}
                 </p>
-
-                {/* Interactions */}
                 <PlaceCard
                   place={place}
                   userId={user?.id}
@@ -159,7 +194,8 @@ export default function NovasDescobertas() {
                 />
               </div>
             </motion.div>
-          ))}
+          ))
+        )}
       </section>
 
       <Footer />

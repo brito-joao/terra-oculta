@@ -7,11 +7,11 @@ import Image from "next/image";
 import Navbar from "../components/nav";
 import Footer from "../components/footer";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Sparkles, LogOut, PencilLine, Coins, User } from "lucide-react";
+import { Sparkles, LogOut, PencilLine, User } from "lucide-react";
 
 export default function ProfileDashboard() {
   const [user, setUser] = useState(null);
+  const [liked, setLiked] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
@@ -22,29 +22,57 @@ export default function ProfileDashboard() {
   useEffect(() => {
     const fetchUser = async () => {
       const res = await fetch("/api/auth/me");
-      if (!res.ok) {
-        router.push("/login");
-        return;
-      }
+      if (!res.ok) return router.push("/login");
       const data = await res.json();
       setUser(data.user);
       setName(data.user.name);
       setEmail(data.user.email);
       setRole(data.user.role);
-      setLoading(false);
     };
-    fetchUser();
+
+    const fetchLikedPlaces = async () => {
+      const res = await fetch("/api/user/liked");
+      if (res.ok) {
+        const data = await res.json();
+        setLiked(data);
+      }
+    };
+
+    Promise.all([fetchUser(), fetchLikedPlaces()]).finally(() => setLoading(false));
   }, [router]);
 
   const handleSave = async () => {
-    const res = await fetch("/api/user/update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email,role }),
-    });
-    if (res.ok) {
-      setUser({ ...user, name, email,role });
-      setEditing(false);
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (trimmedName.length < 2 || trimmedName.length > 50) {
+      alert("O nome deve ter entre 2 e 50 caracteres.");
+      return;
+    }
+
+    if (!emailRegex.test(trimmedEmail)) {
+      alert("Por favor, insira um e-mail válido.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/user/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: trimmedName, email: trimmedEmail, role }),
+      });
+
+      if (res.ok) {
+        setUser((prev) => ({ ...prev, name: trimmedName, email: trimmedEmail }));
+        setEditing(false);
+      } else {
+        const data = await res.json();
+        alert(data.error || "Erro ao salvar.");
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar perfil:", error);
+      alert("Erro inesperado. Tente novamente.");
     }
   };
 
@@ -64,7 +92,7 @@ export default function ProfileDashboard() {
     >
       <Navbar />
 
-      {/* Neon Aura Background */}
+      {/* Neon Aura */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute w-72 h-72 top-20 left-10 bg-[#A259FF] opacity-20 blur-3xl rounded-full animate-pulse" />
         <div className="absolute w-72 h-72 bottom-10 right-10 bg-[#0ABDC6] opacity-20 blur-3xl rounded-full animate-pulse" />
@@ -88,35 +116,71 @@ export default function ProfileDashboard() {
               />
             </div>
             <div className="flex flex-col gap-1 text-center sm:text-left">
-              <h1 className="text-3xl font-bold tracking-tight text-[#A259FF] drop-shadow-md">{user.name}</h1>
-              <p className="text-gray-400 text-sm">{user.email}</p>
+              {editing ? (
+                <>
+                  <input
+                    className="bg-black/20 p-2 rounded-md border border-white/20 text-white"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <input
+                    className="bg-black/20 p-2 rounded-md border border-white/20 text-white"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </>
+              ) : (
+                <>
+                  <h1 className="text-3xl font-bold tracking-tight text-[#A259FF] drop-shadow-md">{name}</h1>
+                  <p className="text-gray-400 text-sm">{email}</p>
+                </>
+              )}
               <div className="flex items-center gap-2 mt-2 text-sm text-[#0ABDC6]">
                 <User className="w-4 h-4" />
-                <span>{user.role} Tier</span>
+                <span>{role} Tier</span>
               </div>
             </div>
           </div>
 
-
-          {/* Extras */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-[#141414] rounded-lg p-4 border border-[#2c2c2c] text-center hover:shadow-neon-blue transition-all duration-300">
-              <Sparkles className="w-6 h-6 mx-auto text-[#A259FF]" />
-              <p className="mt-2 text-sm text-gray-400">Divirta-se nesta mágica aventura</p>
+          {editing ? (
+            <div className="flex gap-4">
+              <Button className="bg-green-600" onClick={handleSave}>Salvar</Button>
+              <Button className="bg-gray-600" onClick={() => setEditing(false)}>Cancelar</Button>
             </div>
-            
-            {user.role == "ADMIN" && (
-              <button
-                className="w-full mt-4 bg-purple-600 hover:bg-purple-700"
-                onClick={() => router.push("/admin")}
-              >
-                Acessar Painel de Admin
-              </button>
-            )}
+          ) : (
+            <Button className="bg-blue-600" onClick={() => setEditing(true)}>
+              <PencilLine className="mr-2 h-4 w-4" /> Editar Perfil
+            </Button>
+          )}
+
+          {/* Liked Places */}
+          <div>
+            <h2 className="text-xl font-semibold text-purple-300 mb-4">🌍 Locais Curtidos</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {liked.length === 0 ? (
+                <p className="text-gray-500">Nenhum local curtido ainda.</p>
+              ) : (
+                liked.map((place) => (
+                  <div key={place.id} className="bg-[#1a1a1a] p-4 rounded-xl border border-[#2a2a2a]">
+                    <h3 className="text-lg font-bold text-purple-400">{place.name}</h3>
+                    <p className="text-sm text-gray-400 line-clamp-2">{place.description}</p>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
 
-          {/* Logout */}
-          <Button onClick={handleLogout} className="w-full mt-6 bg-red-500 hover:bg-red-600">
+          {/* Admin + Logout */}
+          {user.role === "ADMIN" && (
+            <Button
+              className="w-full mt-6 bg-purple-600 hover:bg-purple-700"
+              onClick={() => router.push("/admin")}
+            >
+              Acessar Painel de Admin
+            </Button>
+          )}
+
+          <Button onClick={handleLogout} className="w-full mt-4 bg-red-500 hover:bg-red-600">
             <LogOut className="mr-2" /> Sair da Conta
           </Button>
         </motion.div>
