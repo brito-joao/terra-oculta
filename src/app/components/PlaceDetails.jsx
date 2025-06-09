@@ -88,24 +88,22 @@ const PlaceDetails = ({ id }) => {
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-white min-h-screen relative">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-white min-h-screen bg-black relative">
       <Navbar />
-      <div className="fixed bg-black inset-0 -z-10">
-        <ThreeBackground />
-      </div>
+     
 
-      {/* IMAGE BANNER */}
-      <section className="w-full relative aspect-[21/6] overflow-hidden">
+      {/* Banner */}
+      <section className="w-full relative aspect-[21/6] overflow-hidden border-b border-lime-500/10">
         <img
           src={place.imageUrl}
           alt={place.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover opacity-25"
         />
-        <div className="absolute inset-0 bg-black/50 " />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80" />
         <div className="absolute bottom-4 left-4 z-10">
           <button
             onClick={() => setShowMap((prev) => !prev)}
-            className="bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold px-4 py-2 rounded-full flex items-center gap-2"
+            className="bg-lime-600 hover:bg-lime-500 text-black text-sm font-bold px-4 py-2 rounded-full flex items-center gap-2 tracking-wide"
           >
             <FiMap />
             {showMap ? "Ocultar Mapa" : "Mostrar Mapa"}
@@ -113,47 +111,48 @@ const PlaceDetails = ({ id }) => {
         </div>
       </section>
 
-      {/* MINIMAP */}
+      {/* MiniMap */}
       {showMap && (
-        <section className="w-full aspect-[21/6] overflow-hidden relative z-0 border-b border-white/10">
+        <section className="w-full sm:aspect-[21/6] aspect-[4/3] overflow-hidden relative z-0 border-b border-lime-600/10">
           <MiniMap lat={place.latitude} lng={place.longitude} />
         </section>
       )}
 
-      {/* DETAILS */}
-      <section className="w-full bg-[#0f0f0f] px-4 sm:px-6 md:px-10 py-10 border-t border-white/10">
-        <div className="max-w-4xl mx-auto flex flex-col gap-8">
-          {/* TITLE + META */}
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">{place.name}</h1>
-            <div className="flex flex-wrap gap-3 items-center text-sm text-gray-400">
-              <div className="flex items-center gap-2">
-                <FiMapPin className="text-purple-400" />
-                {place.latitude}, {place.longitude}
-              </div>
+      {/* Content */}
+      <section className="w-full bg-[#0a0a0a] px-4 sm:px-6 md:px-10 py-12 border-t border-white/10">
+        <div className="max-w-4xl mx-auto flex flex-col gap-10">
+
+          {/* Title + Coordinates + Like */}
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold text-lime-400">{place.name}</h1>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-green-300 font-mono">
+              <span className="flex items-center gap-2">
+                <FiMapPin className="text-cyan-400" />
+                {place.latitude.toFixed(4)}° N, {place.longitude.toFixed(4)}° W
+              </span>
               <button
                 onClick={handleLike}
                 disabled={isLiked}
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition ${
+                className={`px-4 py-1.5 rounded-full text-xs font-medium border transition ${
                   isLiked
-                    ? "bg-purple-700 text-white"
-                    : "bg-white/10 text-purple-400 hover:bg-purple-600 hover:text-white"
+                    ? "bg-lime-700 border-lime-600 text-black"
+                    : "bg-black border-lime-500 text-lime-300 hover:bg-lime-500 hover:text-black"
                 }`}
               >
-                <FiHeart />
+                <FiHeart className="inline-block mr-1" />
                 {likes} Like{likes !== 1 && "s"}
               </button>
             </div>
           </div>
 
-          {/* DESCRIPTION */}
-          <div className="text-gray-300 text-sm whitespace-pre-wrap relative">
-            <p className={`${showFullDesc ? "" : "line-clamp-2"} transition-all duration-200`}>
+          {/* Description */}
+          <div className="text-gray-300 text-sm tracking-wide font-sans leading-relaxed">
+            <p className={`${showFullDesc ? "" : "line-clamp-3"} transition-all duration-200`}>
               {place.description}
             </p>
             {place.description?.length > 120 && (
               <button
-                className="mt-2 text-purple-400 text-xs hover:underline"
+                className="mt-2 text-lime-400 text-xs hover:underline font-mono"
                 onClick={() => setShowFullDesc(!showFullDesc)}
               >
                 {showFullDesc ? "Mostrar menos" : "Mostrar mais"}
@@ -161,17 +160,17 @@ const PlaceDetails = ({ id }) => {
             )}
           </div>
 
-          {/* COMMENT FORM */}
+          {/* Comment Input */}
           <form onSubmit={handleComment} className="flex flex-col gap-3">
             <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-full bg-purple-500/30 flex items-center justify-center text-white font-semibold text-sm">
+              <div className="w-9 h-9 rounded-full bg-lime-500/20 flex items-center justify-center text-lime-300 font-semibold text-sm">
                 {userId ? "You" : "?"}
               </div>
               <input
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Escreva um comentário..."
-                className="flex-1 px-4 py-2.5 rounded-lg bg-black/40 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-black/50 border border-lime-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-lime-400"
                 disabled={!userId}
                 onFocus={() => {
                   if (!userId) router.push("/login");
@@ -180,16 +179,16 @@ const PlaceDetails = ({ id }) => {
             </div>
             <button
               type="submit"
-              className="self-end px-5 py-2 bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-semibold rounded-full hover:opacity-90 transition"
+              className="self-end px-6 py-2 bg-lime-500 hover:bg-lime-400 text-black font-semibold rounded-full transition"
             >
               Comentar
             </button>
           </form>
 
-          {/* COMMENT LIST */}
-          <div className="mt-6 space-y-6 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-purple-500/60">
+          {/* Comments List */}
+          <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-lime-500/60">
             {place.comments.length === 0 ? (
-              <p className="text-gray-500 text-center text-sm">Nenhum comentário ainda.</p>
+              <p className="text-gray-600 text-center text-sm">Nenhum comentário ainda.</p>
             ) : (
               [...place.comments].reverse().map((c, i) => {
                 const isAdmin = c.user?.role === "ADMIN";
@@ -206,16 +205,16 @@ const PlaceDetails = ({ id }) => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03 }}
-                    className="border-b border-white/10 pb-4 mb-4 flex items-start gap-4"
+                    className="border-b border-lime-700/10 pb-4 mb-4 flex items-start gap-4"
                   >
-                    <div className="w-9 h-9 rounded-full bg-[#A259FF]/20 flex items-center justify-center text-purple-300 font-semibold text-sm shrink-0">
+                    <div className="w-9 h-9 rounded-full bg-[#A259FF]/20 flex items-center justify-center text-lime-300 font-semibold text-sm shrink-0">
                       {c.user?.name?.[0] || "A"}
                     </div>
                     <div className="flex flex-col text-sm w-full">
                       <div className="flex items-center justify-between flex-wrap">
                         <div className="flex items-center gap-2">
                           <span
-                            className={`font-semibold ${isAdmin ? "text-cyan-400" : "text-purple-400"}`}
+                            className={`font-semibold ${isAdmin ? "text-cyan-400" : "text-lime-300"}`}
                             title={c.user?.email || ""}
                           >
                             {c.user?.name || "Anônimo"}

@@ -3,184 +3,146 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Analytics } from "@vercel/analytics/next"
-import Typewriter from "typewriter-effect";
+import { Analytics } from "@vercel/analytics/next";
 import Navbar from "../components/nav";
 import Footer from "../components/footer";
-import Slideshow from "../components/slideshow";
 import PlaceCard from "../components/PlaceCard";
-import TopPlaces from "../components/TopPlaces";
-import MapExplain from "../components/MapExplain";
-import BroacastLogos from "../components/BroadcastLogos";
-import ExplorationCategories from "../components/Categories";
 import { ThreeBackground } from "../components/Background";
-
 import { Button } from "../../components/ui/button";
 
-const slideshowItems = [
-    { img: "/brunei.jpg", title: "Brunei ceremony" },
-    { img: "/waldo.jpg", title: "Waldo on building" },
-    { img: "/strange.jpg", title: "Land drawing in Peru" },
-    { img: "/finger.jpg", title: "Largest fingerprint" },
-    { img: "/man.jpg", title: "A garden in the shape of a man" },
-    { img: "/alien-ship.webp", title: "An alien-ship drawing in Utah" },
-    { img: "/china-drawing.jpg", title: "A strange pattern in China" },
-];
-
 const HomePage = () => {
-    const router = useRouter();
-    const [places, setPlaces] = useState([]);
-    const [user, setUser] = useState(null);
+  const router = useRouter();
+  const [places, setPlaces] = useState([]);
+  const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await fetch("/api/auth/me", { method: "GET", credentials: "include" });
-                if (!res.ok) throw new Error("User not authenticated");
-                const data = await res.json();
-                setUser(data.user);
-            } catch (error) {
-                console.error("Error fetching user:", error);
-            }
-        };
-        fetchUser();
-    }, []);
+  useEffect(() => {
+    fetch("/api/auth/me", { method: "GET", credentials: "include" })
+      .then((res) => res.ok && res.json())
+      .then((data) => setUser(data?.user))
+      .catch(() => setUser(null));
+  }, []);
 
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            fetch("/api/places")
-                .then((res) => res.json())
-                .then((data) => setPlaces(Array.isArray(data) ? data : Object.values(data)))
-                .catch((err) => console.error("Error fetching places:", err));
-        }, 1000);
-        return () => clearTimeout(timeout);
-    }, []);
+  useEffect(() => {
+    fetch("/api/places")
+      .then((res) => res.json())
+      .then((data) => setPlaces(Array.isArray(data) ? data : Object.values(data)))
+      .catch(console.error);
+  }, []);
 
-    const ensureAuthenticated = () => {
-        if (!user || !user.id) {
-            router.push("/login");
-            return false;
-        }
-        return true;
-    };
+  const ensureAuthenticated = () => {
+    if (!user?.id) {
+      router.push("/login");
+      return false;
+    }
+    return true;
+  };
 
-    const handleLike = async (placeId) => {
-        if (!ensureAuthenticated()) return;
-        try {
-            const res = await fetch("/api/places", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ placeId, userId: user.id, type: "like" }),
-            });
-            if (res.ok) {
-                setPlaces((prev) =>
-                    prev.map((p) => (p.id === placeId ? { ...p, likes: (p.likes || 0) + 1 } : p))
-                );
-            }
-        } catch (error) {
-            console.error("Error liking place:", error);
-        }
-    };
-
-    const handleComment = async (placeId, content) => {
-        if (!ensureAuthenticated()) return;
-        try {
-            const res = await fetch("/api/places", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ placeId, userId: user.id, type: "comment", content }),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setPlaces((prev) =>
-                    prev.map((p) =>
-                        p.id === placeId ? { ...p, comments: [...(p.comments || []), data] } : p
-                    )
-                );
-            }
-        } catch (error) {
-            console.error("Error commenting:", error);
-        }
-    };
-
-    return (
-        <motion.div
-            className="bg-[#000000100] text-white min-h-screen font-sans overflow-hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5 }}
-        >
-            <Navbar />
-
-            <div className="bg-[#141414] fixed top-0 left-0 w-full h-full -z-2">
-                <ThreeBackground />
-            </div>
-
-            <header className="relative flex flex-col lg:flex-row items-center justify-between gap-8 px-6 py-12">
-                <motion.div
-                    className="text-center lg:text-left max-w-lg"
-                    initial={{ x: -100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 1 }}
-                >
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight bg-gradient-to-r from-[#A259FF] to-[#0ABDC6] text-transparent bg-clip-text">
-                    Explorando o invisível.
-                    </h1>
-                    <Typewriter
-                        options={{
-                            strings: ["Procure", "Encontre", "Fique maravilhado"],
-                            autoStart: true,
-                            loop: true,
-                            delay: 75,
-                        }}
-                    />
-                    <p className="text-md sm:text-lg mt-3 text-gray-300">
-                        Explore os mistérios escondidos pelo mundo.
-                    </p>
-                    <Button onClick={() => router.push("/explore")} className="futuristic-btn mt-6">
-                        Começar a explorar
-                    </Button>
-                </motion.div>
-
-                <Slideshow places={places} />
-            </header>
-
-            {/* Top Places Section */}
-            {places.length > 0 && <TopPlaces places={places} />}
-
-            {/* Map Explanation Section */}
-            <MapExplain />
-
-            {/* Latest Discoveries Section */}
-            <section className="px-4 sm:px-6 md:px-12 lg:px-20 py-12 bg-[#ffffff0a] backdrop-blur-md rounded-xl">
-
-                <motion.h2
-                    className="text-3xl sm:text-4xl font-bold text-center text-purple-400 mb-10"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                >
-                    Últimas Descobertas
-                </motion.h2>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {places.slice().reverse().map((place) => (
-                        <PlaceCard
-                            key={place.id}
-                            place={place}
-                            userId={user?.id}
-                            onLike={handleLike}
-                            onComment={handleComment}
-                        />
-                    ))}
-                </div>
-            </section>
-
-
-            <Footer />
-            <Analytics />
-        </motion.div>
+  const handleLike = async (placeId) => {
+    if (!ensureAuthenticated()) return;
+    await fetch("/api/places", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ placeId, userId: user.id, type: "like" }),
+    }).then(() =>
+      setPlaces((prev) =>
+        prev.map((p) => (p.id === placeId ? { ...p, likes: (p.likes || 0) + 1 } : p))
+      )
     );
+  };
+
+  const handleComment = async (placeId, content) => {
+    if (!ensureAuthenticated()) return;
+    const res = await fetch("/api/places", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ placeId, userId: user.id, type: "comment", content }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setPlaces((prev) =>
+        prev.map((p) =>
+          p.id === placeId ? { ...p, comments: [...(p.comments || []), data] } : p
+        )
+      );
+    }
+  };
+
+  return (
+    <motion.div
+      className="min-h-screen font-mono overflow-x-hidden"
+      style={{ backgroundColor: "#010b05", color: "#33ff33" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5 }}
+    >
+      <Navbar />
+
+      {/* Header Radar Style */}
+      <header className="flex flex-col items-center justify-center px-4 pt-10 text-center border-y border-green-800">
+        <motion.h1
+          className="text-4xl md:text-6xl font-extrabold tracking-[0.3em] uppercase"
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+        >
+          TERRA OCULTA
+        </motion.h1>
+
+        <p className="mt-2 text-green-400 text-sm md:text-lg tracking-wider uppercase">
+          Desvendando os Mistérios Geográficos
+        </p>
+
+        <div className="mt-6 w-[280px] sm:w-[400px] md:w-[480px] border border-green-700 p-4 rounded">
+          <ThreeBackground />
+        </div>
+
+        <div className="mt-8 text-center max-w-xl">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-bold uppercase text-green-300">
+            IMERSÕES EM MAPAS COMO NUNCA ANTES
+          </h2>
+          <p className="mt-2 text-green-500 text-sm leading-relaxed">
+            Utilize tecnologia e visualização para experiências exploratórias e descobertas
+            geográficas únicas ao redor do globo.
+          </p>
+        </div>
+
+        <div className="mt-6">
+          <button
+            onClick={() => router.push("/explore")}
+            className="border border-green-400 text-green-300 px-5 py-2 rounded hover:bg-green-700/10 transition-all tracking-widest text-sm uppercase"
+          >
+            EXPLORAR MAPA
+          </button>
+        </div>
+      </header>
+
+      {/* Recent Coordinates - Styled as Radar Posts */}
+      <section className="px-4 sm:px-8 md:px-12 mt-16 max-w-6xl mx-auto">
+        <h2 className="text-xl sm:text-2xl text-center font-bold mb-10 border-b border-green-800 pb-4 uppercase tracking-widest">
+          TRANSMISSÕES RECENTES
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {places.slice(0, 4).reverse().map((place) => (
+            <div
+              key={place.id || place.name}
+              className="border border-green-700 p-4 rounded text-sm hover:bg-green-900/10 transition"
+            >
+              <PlaceCard
+                place={place}
+                userId={user?.id}
+                onLike={handleLike}
+                onComment={handleComment}
+                colorMode="green"
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <Footer />
+      <Analytics />
+    </motion.div>
+  );
 };
 
 export default HomePage;

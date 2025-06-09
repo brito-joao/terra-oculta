@@ -10,12 +10,7 @@ export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({ profilePic: "https://i.imgur.com/3zxQ2si.png" });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleStartExploring = () => router.push("/explore");
-  const handleAuthPage = () => router.push("/login");
-  const handleProfileClick = () => router.push("/dashboard");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -24,145 +19,138 @@ export default function Navbar() {
           method: "GET",
           credentials: "include",
         });
-
-        if (!res.ok) throw new Error("User not authenticated");
+        if (!res.ok) throw new Error("Unauthorized");
         const data = await res.json();
         setUser(data.user);
         setIsLoggedIn(true);
-      } catch (error) {
-        setError(error.message);
+      } catch {
         setIsLoggedIn(false);
       } finally {
         setLoading(false);
       }
     };
-
     fetchUser();
   }, []);
 
+  const handleAuth = () => router.push("/login");
+  const handleProfile = () => router.push("/dashboard");
+
   const navLinks = [
-    { href: "/finds", label: "Novas Finds" },
-    { href: "/about", label: "Sobre Nós" },
-    { href: "/explore", label: "Mapa Interativo" },
-    { href: "/", label: "Página Inicial" },
+    { href: "/", label: "INÍCIO" },
+    { href: "/about", label: "MISSÃO" },
+    { href: "/explore", label: "MAPA" },
+    { href: "/finds", label: "REGISTROS" },
   ];
 
   return (
     <motion.nav
-      className="sticky top-0 z-50 backdrop-blur-md bg-[#111111]/80 border-b border-[#2d2d2d] flex items-center justify-between px-6 py-4 shadow-xl"
-      initial={{ y: -50, opacity: 0 }}
+      className="sticky top-0 z-50 bg-[#010b05] border-b border-green-700 px-6 py-3 flex items-center justify-between font-mono uppercase text-[#33ff33] tracking-widest text-sm"
+      initial={{ y: -40, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.6 }}
     >
       {/* Logo */}
       <div
-        className="text-3xl font-extrabold bg-gradient-to-r from-[#A259FF] to-[#00F9D1] text-transparent bg-clip-text tracking-tight cursor-pointer"
         onClick={() => router.push("/")}
+        className="text-xl font-bold cursor-pointer hover:text-green-400 transition"
       >
-        Terra Oculta
+        TERRA OCULTA
       </div>
 
-      {/* Desktop Nav Links */}
-      <div className="hidden md:flex gap-8 text-white text-base font-medium">
+      {/* Desktop Nav */}
+      <div className="hidden md:flex gap-8">
         {navLinks.map((link) => (
           <a
             key={link.href}
             href={link.href}
-            className="relative group transition-all hover:text-[#A259FF]"
+            className="hover:text-green-300 transition"
           >
             {link.label}
-            <span className="absolute left-0 -bottom-1 w-full h-[2px] bg-gradient-to-r from-[#00F9D1] to-[#A259FF] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
           </a>
         ))}
       </div>
 
-      {/* Mobile Menu Button */}
-      <div className="md:hidden flex items-center">
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="text-white focus:outline-none"
-        >
-          {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
-      </div>
-
-      {/* Auth Section */}
-      <div className="hidden md:flex items-center gap-4">
+      {/* Desktop Auth */}
+      <div className="hidden md:flex items-center">
         {loading ? (
-          <button className="bg-[#A259FF] text-white px-5 py-2 rounded-lg font-semibold animate-pulse">
-            A Carregar...
-          </button>
+          <span className="text-green-500 animate-pulse">CARREGANDO...</span>
         ) : isLoggedIn ? (
           <div
-            onClick={handleProfileClick}
-            className="cursor-pointer rounded-full border-2 border-[#A259FF] hover:shadow-[0_0_10px_#A259FF] transition-all duration-300 transform hover:scale-105"
+            onClick={handleProfile}
+            className="cursor-pointer border border-green-500 p-[2px] rounded-full hover:shadow-[0_0_8px_#33ff33] transition"
           >
             <Image
               src={user.profilePic || "https://i.imgur.com/3zxQ2si.png"}
-              alt="Profile Picture"
-              width={42}
-              height={42}
+              alt="Perfil"
+              width={36}
+              height={36}
               className="rounded-full"
             />
           </div>
         ) : (
           <button
-            onClick={handleAuthPage}
-            className="bg-gradient-to-r from-[#00F9D1] to-[#A259FF] px-5 py-2 rounded-lg text-white font-semibold hover:scale-105 hover:shadow-lg transition-all"
+            onClick={handleAuth}
+            className="border border-green-500 px-4 py-1 rounded hover:bg-green-900/20 transition"
           >
-            Login
+            LOGIN
           </button>
         )}
       </div>
 
-      {/* Mobile Nav Menu */}
+      {/* Mobile Toggle */}
+      <div className="md:hidden text-[#33ff33]">
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 w-full bg-[#111111]/90 backdrop-blur-md border-t border-[#2d2d2d] md:hidden flex flex-col items-center space-y-4 py-4"
+            className="absolute top-full left-0 w-full bg-[#010b05] border-t border-green-700 flex flex-col items-center py-4 space-y-4 md:hidden"
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
           >
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-white text-lg hover:text-[#A259FF] transition-all"
+                className="text-[#33ff33] hover:text-green-300 transition"
               >
                 {link.label}
               </a>
             ))}
 
-            {/* Auth section for mobile */}
             {loading ? (
-              <p className="text-white text-sm">Carregando...</p>
+              <span className="text-green-500">CARREGANDO...</span>
             ) : isLoggedIn ? (
               <div
                 onClick={() => {
-                  handleProfileClick();
+                  handleProfile();
                   setMobileMenuOpen(false);
                 }}
-                className="cursor-pointer mt-2"
+                className="cursor-pointer border border-green-500 p-[2px] rounded-full"
               >
                 <Image
                   src={user.profilePic || "https://i.imgur.com/3zxQ2si.png"}
-                  alt="Profile Picture"
-                  width={42}
-                  height={42}
-                  className="rounded-full border-2 border-[#A259FF]"
+                  alt="Perfil"
+                  width={36}
+                  height={36}
+                  className="rounded-full"
                 />
               </div>
             ) : (
               <button
                 onClick={() => {
-                  handleAuthPage();
+                  handleAuth();
                   setMobileMenuOpen(false);
                 }}
-                className="bg-gradient-to-r from-[#00F9D1] to-[#A259FF] px-5 py-2 rounded-lg text-white font-semibold hover:scale-105 hover:shadow-lg transition-all"
+                className="border border-green-500 px-4 py-1 rounded hover:bg-green-900/20 transition"
               >
-                Login
+                LOGIN
               </button>
             )}
           </motion.div>

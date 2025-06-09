@@ -2,9 +2,14 @@
 
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { GoogleMap, LoadScript, Marker, InfoWindow, Autocomplete } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  InfoWindow,
+  Autocomplete,
+} from "@react-google-maps/api";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
 
 const containerStyle = {
   width: "100vw",
@@ -39,7 +44,7 @@ const mapOptions = {
     {
       featureType: "water",
       elementType: "geometry",
-      stylers: [{ color: "#0ABDC6" }],
+      stylers: [{ color: "#004643" }],
     },
     {
       featureType: "landscape",
@@ -69,34 +74,31 @@ export default function InteractiveMap({ places }) {
 
   return (
     <motion.div
-      className="bg-[#0D0D0D] text-white w-screen h-screen overflow-hidden flex flex-col font-sans"
+      className="bg-black text-[#A1FF0A] w-screen h-screen overflow-hidden flex flex-col font-mono"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      {/* Futuristic Top Bar */}
-      <div className="w-full h-[60px] bg-[#101010]/80 backdrop-blur-lg border-b border-[#A259FF] flex items-center justify-between px-4 z-50">
-        {/* Map Type Toggle */}
+      {/* Tactical Control Bar */}
+      <div className="w-full h-[60px] bg-[#050505]/90 backdrop-blur-sm border-b border-[#A1FF0A]/20 flex items-center justify-between px-4 z-50">
         <div className="flex space-x-2">
           {["roadmap", "satellite", "hybrid"].map((type) => (
             <button
               key={type}
               onClick={() => setMapType(type)}
-              className={`px-4 py-1 text-xs uppercase font-bold rounded-full transition-all border border-[#222] ${
+              className={`px-4 py-1 text-xs uppercase font-bold rounded border transition-all tracking-widest ${
                 mapType === type
-                  ? "bg-gradient-to-r from-[#A259FF] to-[#0ABDC6] text-black shadow"
-                  : "bg-[#1a1a1a] text-white hover:bg-[#333]"
+                  ? "bg-[#A1FF0A] text-black border-[#A1FF0A]"
+                  : "bg-[#111] text-[#A1FF0A] border-[#333] hover:bg-[#1a1a1a]"
               }`}
             >
               {type}
             </button>
           ))}
         </div>
-
-        
       </div>
 
-      {/* Map */}
+      {/* MAP */}
       <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
         <GoogleMap
           onLoad={(map) => setMapRef(map)}
@@ -110,8 +112,8 @@ export default function InteractiveMap({ places }) {
               key={place.id}
               position={{ lat: place.latitude, lng: place.longitude }}
               icon={{
-                 // custom pin design if needed
-                scaledSize: new window.google.maps.Size(30, 30),
+                url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png", // tactical green
+                scaledSize: new window.google.maps.Size(32, 32),
               }}
               onClick={() => setActivePlace(place)}
             />
@@ -122,19 +124,23 @@ export default function InteractiveMap({ places }) {
               position={{ lat: activePlace.latitude, lng: activePlace.longitude }}
               onCloseClick={() => setActivePlace(null)}
             >
-              <div className="bg-[#141414] text-white w-64 rounded-2xl border border-[#0ABDC6] shadow-lg p-4 space-y-2">
+              <div className="bg-[#0f0f0f] text-[#A1FF0A] w-64 rounded border border-[#A1FF0A] shadow-xl p-4 space-y-2 font-mono">
                 <img
                   src={activePlace.imageUrl}
                   alt={activePlace.name}
-                  className="rounded-lg w-full h-32 object-cover border border-[#333]"
+                  className="rounded w-full h-32 object-cover border border-[#222]"
                 />
-                <h3 className="text-lg font-bold text-[#A259FF]">{activePlace.name}</h3>
-                <p className="text-sm text-gray-300">{activePlace.description.slice(0, 100)}...</p>
+                <h3 className="text-base font-bold uppercase tracking-wider">
+                  {activePlace.name}
+                </h3>
+                <p className="text-xs text-[#C0FFC0]">
+                  {activePlace.description.slice(0, 100)}...
+                </p>
                 <button
                   onClick={() => router.push(`/place/${activePlace.id}`)}
-                  className="mt-2 w-full text-center py-1 bg-gradient-to-r from-[#A259FF] to-[#0ABDC6] rounded-lg text-sm font-semibold hover:opacity-90"
+                  className="mt-2 w-full py-1.5 text-center border border-[#A1FF0A] text-[#0f0f0f] bg-[#A1FF0A] font-semibold rounded hover:opacity-90 transition uppercase text-sm"
                 >
-                  Explore
+                  Access Node
                 </button>
               </div>
             </InfoWindow>

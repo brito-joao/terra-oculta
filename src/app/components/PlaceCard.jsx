@@ -2,44 +2,34 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaRegHeart, FaCommentDots } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
 
-// Inject pattern defs once globally
+// Grid pattern defs
 const SVGPatternDefs = () => (
   <svg width="0" height="0" style={{ position: "absolute" }}>
     <defs>
-      <pattern id="grid0" width="40" height="40" patternUnits="userSpaceOnUse">
-        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeOpacity="0.3" strokeWidth="1" />
-      </pattern>
-      <pattern id="grid1" width="30" height="30" patternUnits="userSpaceOnUse">
-        <path d="M 30 0 L 0 0 0 30" fill="none" stroke="lime" strokeOpacity="0.25" strokeWidth="1" />
-      </pattern>
-      <pattern id="grid2" width="28" height="28" patternUnits="userSpaceOnUse">
-        <path d="M 0 0 L 28 28 M28 0 L 0 28" fill="none" stroke="cyan" strokeOpacity="0.2" strokeWidth="1" />
-      </pattern>
-      <pattern id="grid3" width="1" height="14" patternUnits="userSpaceOnUse">
-        <rect width="100%" height="1" fill="white" fillOpacity="0.15" />
-      </pattern>
-      <pattern id="grid4" width="32" height="32" patternUnits="userSpaceOnUse">
-        <path d="M 32 0 L 0 0 0 32" fill="none" stroke="lime" strokeOpacity="0.2" strokeWidth="2" />
-      </pattern>
-      <pattern id="grid5" width="20" height="20" patternUnits="userSpaceOnUse">
-        <path d="M 0 0 L 20 0 M 0 0 L 0 20" fill="none" stroke="white" strokeOpacity="0.1" strokeWidth="1" />
-      </pattern>
-      <pattern id="grid6" width="25" height="25" patternUnits="userSpaceOnUse">
-        <path d="M 0 25 L 25 0" fill="none" stroke="deepskyblue" strokeOpacity="0.15" strokeWidth="1" />
-      </pattern>
-      <pattern id="grid7" width="16" height="16" patternUnits="userSpaceOnUse">
-        <path d="M 0 0 L 0 16" fill="none" stroke="lime" strokeOpacity="0.2" strokeWidth="1" />
-      </pattern>
+      {[...Array(8)].map((_, i) => (
+        <pattern
+          key={i}
+          id={`grid${i}`}
+          width={(i + 1) * 4}
+          height={(i + 1) * 4}
+          patternUnits="userSpaceOnUse"
+        >
+          <path
+            d="M 0 0 L 0 100 M 0 0 L 100 0"
+            fill="none"
+            stroke={["white", "lime", "cyan", "white", "lime", "white", "deepskyblue", "lime"][i]}
+            strokeOpacity="0.1"
+            strokeWidth="1"
+          />
+        </pattern>
+      ))}
     </defs>
   </svg>
 );
 
-// Utility
-const hashSeed = (str) => [...str.toString()].reduce((a, c) => a + c.charCodeAt(0), 0);
-
-// Coordinate animation
+// Coordinate flicker
 const getInitialCharArray = (text) =>
   text.split("").map((char) =>
     /\d/.test(char)
@@ -75,17 +65,17 @@ const AnimatedCoordinates = ({ text }) => {
             };
             return reverted;
           });
-        }, 250);
+        }, 200);
 
         return updated;
       });
-    }, 500);
+    }, 700);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <p className="text-xs font-mono text-lime-400 mt-1 whitespace-nowrap">
+    <p className="text-xs font-mono text-lime-400 mt-1 tracking-wide text-center">
       {charArray.map((c, i) => (
         <span key={i}>{c.display}</span>
       ))}
@@ -93,7 +83,11 @@ const AnimatedCoordinates = ({ text }) => {
   );
 };
 
-// Main Card
+// Seed utility
+const hashSeed = (str) =>
+  [...str.toString()].reduce((a, c) => a + c.charCodeAt(0), 0);
+
+// Main component
 const PlaceCard = ({ place }) => {
   const seed = hashSeed(place.id);
   const patternId = seed % 8;
@@ -101,59 +95,42 @@ const PlaceCard = ({ place }) => {
   const lng = Number(place.longitude).toFixed(4);
   const coordText = `${lat}° N, ${lng}° W`;
 
-  const animationId = `patternMove${seed}`;
-  const dx = (seed % 2 === 0 ? 1 : -1) * (40 + (seed % 40));
-  const dy = (seed % 3 === 0 ? 1 : -1) * (40 + (seed % 30));
-  const duration = 3 + (seed % 3); // 3–5 seconds
-
   return (
     <>
       <SVGPatternDefs />
-
-      <style jsx>{`
-        @keyframes ${animationId} {
-          0% {
-            patternTransform: translate(0, 0);
-          }
-          100% {
-            patternTransform: translate(${dx}px, ${dy}px);
-          }
-        }
-        .pattern-${animationId} rect {
-          animation: ${animationId} ${duration}s linear infinite;
-        }
-      `}</style>
-
       <Link href={`/place/${place.id}`}>
         <div
-          className="relative rounded-3xl overflow-hidden border border-[#A259FF]/20 transition-transform duration-300 hover:scale-[1.015]"
-          style={{ backgroundColor: "#0a0a0a" }}
+          className="relative group border border-green-700 rounded-md overflow-hidden bg-[#050805] shadow-[0_0_8px_#00ff7f44] hover:shadow-[0_0_12px_#00ff7f66] transition-transform hover:scale-[1.02]"
+          style={{ width: "100%", aspectRatio: "1 / 1" }}
         >
-          {/* Actual moving pattern */}
-          <svg
-            className={`absolute inset-0 w-full h-full pattern-${animationId}`}
-            style={{ zIndex: 1 }}
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect width="100%" height="100%" fill={`url(#grid${patternId})`} />
-          </svg>
+          {/* Background pattern + image */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src={place.imageUrl}
+              alt={place.name}
+              className="w-full h-full object-cover opacity-20 mix-blend-lighten"
+            />
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none mix-blend-overlay"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="100%" height="100%" fill={`url(#grid${patternId})`} />
+            </svg>
+          </div>
 
-          <div className="relative z-10 p-6 h-64 flex flex-col justify-between">
-            <div>
-              <h2 className="text-white text-xl font-bold tracking-tight">{place.name}</h2>
-              <AnimatedCoordinates text={coordText} />
-            </div>
-            <p className="text-sm text-gray-300 mt-4 line-clamp-2">{place.description}</p>
-            <div className="flex justify-between items-center text-xs text-gray-400 mt-6">
-              <div className="flex items-center gap-2">
-                <FaRegHeart className="text-[#A259FF]" />
-                <span>{place.likes.length}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaCommentDots className="text-[#0ABDC6]" />
-                <span>{place.comments.length}</span>
-              </div>
-            </div>
+
+          {/* Content */}
+          <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-2">
+            <h3 className="text-[#33ff33] text-sm sm:text-base font-bold tracking-wider uppercase">
+              {place.name}
+            </h3>
+            <AnimatedCoordinates text={coordText} />
+          </div>
+
+          {/* Likes - top left corner */}
+          <div className="absolute top-2 left-2 flex items-center gap-1 text-lime-400 text-xs">
+            <FaRegHeart className="text-[#33ff33]" />
+            <span>{place.likes.length}</span>
           </div>
         </div>
       </Link>
