@@ -1,118 +1,100 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/nav";
 import Footer from "../components/footer";
 import { ThreeBackground } from "../components/Background";
 
+const privacyLines = [
+  "Política de Privacidade Iniciada...",
+  "--------------------------------------------------",
+  "Valorizamos mais o dinheiro do que a sua privacidade.",
+  "Todos os dados são tratados com segurança (ou não).",
+  "Coletamos tudo: nome, e-mail, comentários, localização, pensamentos...",
+  "Esses dados podem ser compartilhados com terceiros sem aviso prévio.",
+  "Você pode comentar livremente, mas a moderação é ditadura.",
+  "Utilizamos cookies para personalizar sua submissão ao sistema.",
+  "Ao continuar, você consente com tudo que ainda não leu.",
+  "Não garantimos segurança, apenas entretenimento.",
+  "Para dúvidas, contate suporte@terraoculta.gov",
+  "--------------------------------------------------",
+  "FIM DA POLÍTICA. Reiniciando...",
+];
+
 const PrivacyPage = () => {
-    return (
-        <motion.div
-            className="bg-[#0a0a0a] text-white min-h-screen font-sans overflow-hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5 }}
-        >
-            <Navbar />
+  const [lines, setLines] = useState([]);
+  const [currentLineIndex, setCurrentLineIndex] = useState(0);
+  const [currentText, setCurrentText] = useState("");
+  const [charIndex, setCharIndex] = useState(0);
 
-            <div className="bg-[#0a0a0a] fixed top-0 left-0 w-full h-full -z-2">
-                <ThreeBackground />
-            </div>
+  useEffect(() => {
+    let typingTimeout;
 
-            <main className="relative overflow-hidden h-screen z-10">
-                <div className="perspective">
-                    <div className="crawl">
-                        <div className="text">
-                            <h1>Política de Privacidade</h1>
-                            <p>
-                                Valorizamos mais o dinheiro do que a sua privacidade. Todas as informações fornecidas neste site são tratadas com
-                                o mais alto nível de segurança e respeito sempre visando o lúcro.
-                            </p>
-                            <p>
-                                Coletamos quaisquer dados que pensamos ser necessários para oferecer a melhor experiência de navegação,
-                                incluindo nome, e-mail, comentários.
-                            </p>
-                            <p>
-                                Esses dados poderão ser vendidos ou compartilhados com terceiros sem o seu
-                                consentimento explícito.
-                            </p>
-                            <p>
-                                Você é livre para poder alterar e falar livremente sobre qualquer assunto neste site, nós deixamos.
-                                Porém, caso os administradores pensem que não se encaixa com este site, então eles estão livres para remover qualquer comentário.
-                            </p>
-                            <p>
-                                Usamos cookies e tecnologias semelhantes para personalizar sua experiência,
-                                analisar o tráfego e entender padrões de uso do site.
-                            </p>
-                            <p>
-                                Ao continuar a navegar neste site, você concorda com o uso dessas práticas e permite que os seus dados sejam vendidos (brincadeira).
-                            </p>
-                            <p>
-                                Não garantimos que os seus dados estão seguros, mas podemos garantir que não contratamos nenhuma equipe de investigação privada para stalkear os nossos utilizadores.
+    // Finished typing all lines
+    if (currentLineIndex >= privacyLines.length) {
+      typingTimeout = setTimeout(() => {
+        setLines([]);
+        setCurrentLineIndex(0);
+        setCurrentText("");
+        setCharIndex(0);
+      }, 4000);
+      return () => clearTimeout(typingTimeout);
+    }
 
-                                Prometemos que iremos trazer os melhores conteúdos e informações que seriam bloqueadas em outros websites.
-                            </p>
-                            <p>
-                                Se tiver dúvidas, entre em contato com nossa equipe de suporte via e-mail
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </main>
+    // Finished typing current line
+    if (charIndex >= privacyLines[currentLineIndex]?.length) {
+      typingTimeout = setTimeout(() => {
+        setLines((prev) => [...prev, privacyLines[currentLineIndex]]);
+        setCurrentLineIndex((prev) => prev + 1);
+        setCharIndex(0);
+        setCurrentText("");
+      }, 800);
+    } else {
+      // Typing next character
+      typingTimeout = setTimeout(() => {
+        setCurrentText((prev) => prev + privacyLines[currentLineIndex][charIndex]);
+        setCharIndex((prev) => prev + 1);
+      }, 35); // Speed of typing per character
+    }
 
-            <Footer />
+    return () => clearTimeout(typingTimeout);
+  }, [charIndex, currentLineIndex]);
 
-            <style jsx global>{`
-                .perspective {
-                    perspective: 600px;
-                    height: 100vh;
-                    overflow: hidden;
-                    position: relative;
-                }
+  return (
+    <motion.div
+      className="bg-black text-green-400 min-h-screen overflow-hidden font-mono relative"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <Navbar />
 
-                .crawl {
-                    position: absolute;
-                    bottom: -100%;
-                    width: 100%;
-                    transform: rotateX(25deg);
-                    animation: crawl 60s linear infinite;
-                }
+      <div className="fixed top-0 left-0 w-full h-full -z-10">
+        <ThreeBackground />
+      </div>
 
-                .text {
-                    font-size: 1.25rem;
-                    text-align: center;
-                    max-width: 600px;
-                    margin: 0 auto;
-                    color: #e0e0e0;
-                    padding: 0 1rem;
-                }
+      <main className="relative z-10 px-4 sm:px-10 pt-24 pb-32 max-w-4xl mx-auto">
+        <div className="bg-black/80 p-6 sm:p-10 border border-green-700 rounded-xl shadow-md backdrop-blur-md">
+          <h1 className="text-xl sm:text-2xl font-bold text-lime-300 mb-6">
+            [ Terminal: Política de Privacidade ]
+          </h1>
+          <div className="space-y-2 text-sm sm:text-base leading-relaxed tracking-wider">
+            {lines.map((line, i) => (
+              <p key={i} className="whitespace-pre-wrap">{line}</p>
+            ))}
+            {currentText && (
+              <p className="whitespace-pre-wrap">
+                {currentText}
+                <span className="animate-pulse">█</span>
+              </p>
+            )}
+          </div>
+        </div>
+      </main>
 
-                .text h1 {
-                    font-size: 2.5rem;
-                    margin-bottom: 1rem;
-                    color: #A259FF;
-                }
-
-                @keyframes crawl {
-                    0% {
-                        bottom: -100%;
-                        opacity: 0;
-                    }
-                    5% {
-                        opacity: 1;
-                    }
-                    50% {
-                        opacity: 1;
-                    }
-                    100% {
-                        bottom: 100%;
-                        opacity: 0;
-                    }
-                }
-            `}</style>
-        </motion.div>
-    );
+      <Footer />
+    </motion.div>
+  );
 };
 
 export default PrivacyPage;

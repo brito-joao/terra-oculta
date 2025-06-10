@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import AddPlaceForm from "../components/AddPlaceForm";
 import AdminUserManagement from "./adminUsers";
-
 import CommentListAdmin from "./CommentListAdmin";
 import PlaceListAdmin from "./AdminPlacesManage";
+
 export default function AdminPage() {
   const [user, setUser] = useState(null);
   const [newAdmin, setNewAdmin] = useState({ name: "", email: "", password: "" });
@@ -55,112 +55,91 @@ export default function AdminPage() {
     setSections(prev => ({ ...prev, [section]: !prev[section] }));
 
   if (!user)
-    return <p className="text-white text-center mt-20 animate-pulse">A Carregar...</p>;
+    return <p className="text-lime-400 text-center mt-20 font-mono animate-pulse">Carregando sistema...</p>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white p-6">
-      {/* HEADER */}
-      <div className="flex justify-between items-center mb-12">
-        <h1 className="text-4xl font-extrabold tracking-wide text-purple-400">
-          🛸 Painel de Controlo do admin
-        </h1>
-        <div className="text-sm text-gray-300">
-          Logado como <span className="font-semibold text-white">{user.name}</span>
-        </div>
-      </div>
+    <motion.div
+      className="min-h-screen bg-[#010b05] text-[#33ff33] font-mono px-4 py-10 overflow-x-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.2 }}
+    >
+      <h1 className="text-3xl sm:text-4xl font-bold tracking-widest border-b border-green-800 pb-3 mb-10 uppercase">
+        🛸 Painel de Controle – ADMIN
+      </h1>
 
-      {/* MAIN PANELS */}
+      <p className="text-sm text-green-500 mb-10 border-b border-green-900 pb-2">
+        Logado como: <span className="text-[#33ff33] font-semibold">{user.name}</span>
+      </p>
+
+      {/* Control Sections */}
       <div className="space-y-8">
-        {/* USERS */}
-        <Section title="👥 Gerir utilizadores" open={sections.users} onToggle={() => toggle("users")} color="blue">
+        <Section title="👥 Gerir Utilizadores" open={sections.users} onToggle={() => toggle("users")}>
           <AdminUserManagement />
         </Section>
 
-        {/* COMMENTS */}
-        <Section title="💬 Moderar Comentários" open={sections.comments} onToggle={() => toggle("comments")} color="orange">
+        <Section title="💬 Moderar Comentários" open={sections.comments} onToggle={() => toggle("comments")}>
           <CommentListAdmin />
         </Section>
 
-        {/* ADD PLACE */}
-        <Section title="➕ Adicionar uma nova localização" open={sections.addPlace} onToggle={() => toggle("addPlace")} color="green">
+        <Section title="➕ Adicionar Nova Localização" open={sections.addPlace} onToggle={() => toggle("addPlace")}>
           <AddPlaceForm />
         </Section>
 
-        {/* CREATE ADMIN */}
-        <Section title="👤 Criar um novo admin" open={sections.createAdmin} onToggle={() => toggle("createAdmin")} color="pink">
+        <Section title="👤 Criar Novo Admin" open={sections.createAdmin} onToggle={() => toggle("createAdmin")}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input
               type="text"
-              placeholder="Admin Name"
-              className="bg-white/5 placeholder-white/60 text-white p-3 rounded-xl border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              placeholder="Nome"
+              className="bg-black text-lime-300 px-3 py-2 border border-green-800 placeholder-green-600 focus:outline-none"
               onChange={(e) => setNewAdmin({ ...newAdmin, name: e.target.value })}
             />
             <input
               type="email"
               placeholder="Email"
-              className="bg-white/5 placeholder-white/60 text-white p-3 rounded-xl border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="bg-black text-lime-300 px-3 py-2 border border-green-800 placeholder-green-600 focus:outline-none"
               onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}
             />
             <input
               type="password"
-              placeholder="Password"
-              className="bg-white/5 placeholder-white/60 text-white p-3 rounded-xl border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              placeholder="Senha"
+              className="bg-black text-lime-300 px-3 py-2 border border-green-800 placeholder-green-600 focus:outline-none"
               onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
             />
             <button
               onClick={createAdmin}
-              className="col-span-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-105 transition-transform duration-200 text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-purple-800"
+              className="col-span-full bg-green-900 text-green-300 border border-green-600 py-2 hover:bg-green-700 transition uppercase tracking-wide"
             >
-              Criar admin ✨
+              Criar Admin
             </button>
           </div>
         </Section>
 
-        {/* PLACES */}
-        <Section title="🌍 Todas as localizações" open={sections.places} onToggle={() => toggle("places")} color="red">
+        <Section title="🌍 Ver Localizações" open={sections.places} onToggle={() => toggle("places")}>
           <PlaceListAdmin />
         </Section>
       </div>
 
-      {/* ADMIN SHORTCUT GRID */}
-      <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          { title: "👁️ Ver todos os utilizadores", color: "from-pink-500 to-purple-600" },
-          { title: "🗺️ Gerir localizações", color: "from-cyan-500 to-blue-600" },
-          { title: "📊 Ver as estatísticas", color: "from-amber-400 to-yellow-500" },
-          { title: "🔒 Segurança e permissões", color: "from-rose-500 to-red-600" },
-          { title: "🛠️ Configurações do website", color: "from-indigo-400 to-violet-600" },
-        ].map(({ title, color }, i) => (
-          <motion.button
-            key={i}
-            whileHover={{ scale: 1.05 }}
-            className={`w-full py-6 px-4 rounded-2xl font-semibold text-white text-center bg-gradient-to-br ${color} shadow-lg hover:shadow-xl transition-all duration-200`}
-          >
-            {title}
-          </motion.button>
-        ))}
+      {/* Footer */}
+      <div className="mt-20 border-t border-green-900 pt-4 text-sm text-green-700 text-center">
+        TERRA OCULTA ADMIN V1.0 ⌁ SISTEMA INTERNO
       </div>
-
-      {/* FOOTER */}
-      <div className="mt-16 text-center text-gray-400 text-sm">
-        Terra Admin Panel ⚡ Versão 1.0 — Criado com 🚀 pelos Três mestres
-      </div>
-    </div>
+    </motion.div>
   );
 }
 
-// Reusable section with dropdown behavior
-function Section({ title, open, onToggle, children, color }) {
+// Reusable section with toggle dropdown
+function Section({ title, open, onToggle, children }) {
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-xl">
+    <div className="border border-green-800">
       <button
         onClick={onToggle}
-        className={`w-full text-left flex items-center justify-between px-6 py-4 text-xl font-bold text-${color}-400 hover:text-white transition`}
+        className="w-full flex justify-between items-center px-4 py-3 border-b border-green-800 text-left uppercase tracking-wider text-sm text-lime-300 hover:bg-green-800/10 transition"
       >
         {title}
-        <span className="text-white text-2xl">{open ? "−" : "+"}</span>
+        <span className="text-lg">{open ? "−" : "+"}</span>
       </button>
-      {open && <div className="px-6 pb-6">{children}</div>}
+      {open && <div className="p-4">{children}</div>}
     </div>
   );
 }

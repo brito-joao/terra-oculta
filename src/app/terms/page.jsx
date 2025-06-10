@@ -16,47 +16,71 @@ const terms = [
   "Resumindo: liberdade total. Mas os Admin é que mandam, e podem te deletar com um clique se for necessário.",
 ];
 
+const flicker = {
+  initial: { opacity: 0.6 },
+  animate: {
+    opacity: [0.6, 1, 0.6],
+    transition: {
+      repeat: Infinity,
+      duration: 1.5,
+      ease: "easeInOut",
+    },
+  },
+};
+
 const TermsPage = () => {
   return (
     <motion.div
-      className="bg-[#080808] text-white min-h-screen font-sans overflow-hidden"
+      className="min-h-screen bg-[#010b05] text-[#33ff33] font-mono overflow-hidden relative"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1.5 }}
     >
       <Navbar />
-      <div className="fixed top-0 left-0 w-full h-full -z-10 bg-black opacity-80">
+
+      {/* Background */}
+      <div className="fixed top-0 left-0 w-full h-full -z-10">
         <ThreeBackground />
+        <div className="absolute inset-0 bg-black opacity-80" />
+        <div className="absolute inset-0 bg-[linear-gradient(transparent_95%,#0f0_95%)] bg-[length:100%_2px] opacity-5 pointer-events-none" />
       </div>
 
-      <main className="relative px-6 py-24 max-w-6xl mx-auto z-10">
+      {/* Header */}
+      <main className="relative max-w-6xl mx-auto px-4 py-24 z-10">
         <motion.h1
-          className="text-4xl sm:text-6xl font-extrabold text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-[#A259FF] to-[#0ABDC6] animate-pulse"
-          initial={{ scale: 0.9, opacity: 0 }}
+          className="text-3xl sm:text-5xl font-extrabold text-center uppercase tracking-[0.2em] border-b border-green-700 pb-6"
+          initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          ⚙️ Termos & Condições do Terra Oculta ⚙️
+          ⚙️ Termos & Condições ⚙️
         </motion.h1>
 
-        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Terms */}
+        <div className="mt-12 space-y-6">
           {terms.map((text, idx) => (
             <motion.div
               key={idx}
-              className="p-6 bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] rounded-2xl shadow-lg border border-[#A259FF]/30 backdrop-blur-lg hover:scale-105 transition-transform duration-300"
-              initial={{ y: 30, opacity: 0 }}
+              className="border border-green-700 bg-black p-4 text-sm sm:text-base tracking-wide shadow-[0_0_12px_#33ff3340]"
+              initial={{ y: 20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: idx * 0.2 }}
+              transition={{ duration: 0.6, delay: idx * 0.2 }}
               viewport={{ once: true }}
             >
-              <p className="text-gray-300 text-md leading-relaxed">{text}</p>
+              <p className="text-[#a0ffb2] leading-relaxed">{text}</p>
             </motion.div>
           ))}
         </div>
 
-        <p className="text-center text-sm text-gray-500 italic mt-12">
+        {/* Footer Date */}
+        <motion.div
+          className="mt-12 text-center text-xs text-green-600 uppercase tracking-widest"
+          variants={flicker}
+          initial="initial"
+          animate="animate"
+        >
           Última atualização: {new Date().toLocaleDateString("pt-PT")}
-        </p>
+        </motion.div>
       </main>
 
       <Footer />

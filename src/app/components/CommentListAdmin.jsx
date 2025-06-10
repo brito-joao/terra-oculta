@@ -13,7 +13,7 @@ export default function CommentListAdmin() {
   }, []);
 
   const deleteComment = async (commentId) => {
-    if (!confirm("Are you sure you want to delete this comment?")) return;
+    if (!confirm("⚠️ Tens a certeza que queres deletar este comentário?")) return;
 
     const res = await fetch("/api/places", {
       method: "DELETE",
@@ -29,60 +29,58 @@ export default function CommentListAdmin() {
         }))
       );
     } else {
-      alert("Failed to delete comment.");
+      alert("❌ Falha ao deletar comentário.");
     }
   };
 
   const togglePlaceComments = (placeId) => {
     setOpenPlaceIds(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(placeId)) {
-        newSet.delete(placeId);
-      } else {
-        newSet.add(placeId);
-      }
+      newSet.has(placeId) ? newSet.delete(placeId) : newSet.add(placeId);
       return newSet;
     });
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 font-mono text-[#33ff33]">
       {places.map(place => (
         <div
           key={place.id}
-          className="rounded-xl bg-white/5 border border-white/20 overflow-hidden"
+          className="border border-green-800 bg-black/60"
         >
           <button
             onClick={() => togglePlaceComments(place.id)}
-            className="w-full flex justify-between items-center px-4 py-3 text-left bg-white/10 hover:bg-white/20 transition-colors"
+            className="w-full flex justify-between items-center px-4 py-3 text-left bg-[#010b05] hover:bg-[#062d06] transition"
           >
-            <h3 className="text-lg font-bold text-cyan-400">
+            <h3 className="text-base sm:text-lg font-bold text-[#00ffd0] uppercase tracking-wide">
               {place.name}
             </h3>
-            <span className="text-sm text-gray-300">
-              {place.comments.length} commentario{place.comments.length !== 1 && "s"}
+            <span className="text-sm text-lime-300">
+              {place.comments.length} comentário{place.comments.length !== 1 && "s"}
             </span>
           </button>
 
           {openPlaceIds.has(place.id) && (
-            <div className="px-4 py-3 space-y-2 bg-black/30 border-t border-white/10">
+            <div className="px-4 py-3 space-y-3 border-t border-green-700 bg-black/80">
               {place.comments.length === 0 ? (
-                <p className="text-gray-400 text-sm">Nenhum comentário para esta publicação.</p>
+                <p className="text-green-500 text-sm">Sem comentários para esta localização.</p>
               ) : (
                 place.comments.map(comment => (
                   <div
                     key={comment.id}
-                    className="p-3 bg-white/5 border border-white/10 rounded-lg flex justify-between items-center"
+                    className="p-3 border border-green-700 bg-[#010b05] flex justify-between items-start gap-4"
                   >
-                    <div>
-                      <p className="text-sm text-purple-400 font-semibold">
+                    <div className="flex-1">
+                      <p className="text-sm text-cyan-400 font-semibold mb-1">
                         {comment.user?.name || "Anon"}
                       </p>
-                      <p className="text-white">{comment.content}</p>
+                      <p className="text-green-200 text-sm leading-snug">
+                        {comment.content}
+                      </p>
                     </div>
                     <button
                       onClick={() => deleteComment(comment.id)}
-                      className="ml-4 text-sm px-3 py-1 bg-red-600 hover:bg-red-700 rounded-lg text-white"
+                      className="px-3 py-1 bg-red-700 hover:bg-red-800 text-white text-xs uppercase font-bold tracking-widest"
                     >
                       Deletar
                     </button>

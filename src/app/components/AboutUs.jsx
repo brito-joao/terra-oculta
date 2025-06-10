@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -8,137 +8,143 @@ import Navbar from "../components/nav";
 import Footer from "../components/footer";
 import { OtherBackground } from "../components/Background";
 
-const founders = [
-  { name: "Rafa", img: "/rafa.jpeg", role: "Cruzado Digital" },
-  { name: "João", img: "/joao.jpeg", role: "Estrategista Mestre" },
-  { name: "Israel Bapolo", img: "https://i.imgur.com/RN0ZlKu.jpg", role: "Guerreiro da Arte" },
+const people = [
+  {
+    name: "Rafael",
+    img: "https://i.imgur.com/h62zdzd.jpeg",
+    role: "Cruzado Digital",
+    description:
+      "Com visão afiada e dedicação imbatível, Rafa lidera as incursões digitais com ousadia e precisão. Construtor da ponte entre ideia e execução.",
+  },
+  {
+    name: "João",
+    img: "https://i.imgur.com/J2VyiW5.jpeg",
+    role: "Estrategista Mestre",
+    description:
+      "Sempre dois passos à frente, João conecta pontos invisíveis com maestria. Um arquiteto de narrativas e movimentos certeiros.",
+  },
+  {
+    name: "Israel",
+    img: "https://i.imgur.com/JgQ0UwG.jpeg",
+    role: "Guerreiro da Arte",
+    description:
+      "Movido por expressão e detalhe, Israel traz alma visual à missão. Um escultor do intangível e defensor da beleza oculta.",
+  },
 ];
 
-const team = [
-  { name: "Ana Silva", role: "Feiticeira do Código" },
-  { name: "Miguel Torres", role: "Explorador de Visões" },
-  { name: "Leonor Matos", role: "Alquimista de Texturas" },
-  { name: "Carlos Mendes", role: "Sussurrador de Servidores" },
-  { name: "Bruna Costa", role: "Feiticeira da UI" },
-  { name: "Pedro Lemos", role: "Caçador de Bugs" },
+const values = [
+  {
+    title: "Visão Imersiva",
+    description: "Enxergamos além do óbvio. Tudo que fazemos parte da curiosidade pelo que está oculto.",
+    icon: "🧠",
+  },
+  {
+    title: "Exploração Constante",
+    description: "Não há destino final, apenas novas coordenadas a investigar. O movimento é eterno.",
+    icon: "🛰️",
+  },
+  {
+    title: "Autonomia Radical",
+    description: "Cada membro da equipe é livre para agir com propósito e responsabilidade.",
+    icon: "🛠️",
+  },
+  {
+    title: "Design com Significado",
+    description: "Beleza não é estética: é comunicação profunda. Tudo que criamos tem alma.",
+    icon: "🎨",
+  },
+  {
+    title: "Transparência Tática",
+    description: "Confiamos uns nos outros com informação e intenções. A clareza é arma.",
+    icon: "🔍",
+  },
+  {
+    title: "Espírito de Missão",
+    description: "Cada projeto é uma chamada. Cada entrega é uma vitória coletiva.",
+    icon: "🚀",
+  },
 ];
 
 export default function AboutUsPage() {
   const router = useRouter();
+  const [selected, setSelected] = useState(1);
 
   return (
-    <motion.div className="relative min-h-screen text-white overflow-hidden font-sans">
-      <div className="fixed bg-black inset-0 -z-10">
+    <motion.div className="relative min-h-screen text-white font-mono overflow-hidden">
+      <div className="fixed inset-0 bg-black -z-10">
         <OtherBackground />
       </div>
 
       <Navbar />
 
-      <section className="pt-32 pb-20 px-6 max-w-7xl mx-auto text-center">
+      <section className="pt-28 pb-10 px-4 sm:px-8 max-w-6xl mx-auto text-center">
         <motion.h1
-          className="text-6xl md:text-8xl font-black bg-gradient-to-r from-[#A259FF] to-[#0ABDC6] text-transparent bg-clip-text drop-shadow-lg"
-          initial={{ opacity: 0, y: 50 }}
+          className="text-4xl md:text-6xl font-extrabold tracking-widest uppercase bg-gradient-to-r from-[#A1FF0A] to-[#0ABDC6] bg-clip-text text-transparent"
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          Mentes por Trás da Missão
+          Sobre Nós
         </motion.h1>
-        <motion.button
-          onClick={() => router.push("/")}
-          className="mt-10 px-8 py-3 rounded-full bg-[#0ABDC6] text-black font-bold shadow-lg hover:shadow-xl hover:bg-[#09a9b5] transition"
-          whileHover={{ scale: 1.05 }}
-        >
-          Voltar ao Início
-        </motion.button>
-      </section>
-
-      {/* Founders */}
-      <section className="px-6 pb-28 max-w-6xl mx-auto">
-        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
-          {founders.map((member, idx) => (
-            <motion.div
-              key={idx}
-              className="bg-[#0f0f0f] border border-[#1e1e1e] rounded-3xl p-6 text-center shadow-[0_0_30px_#0ABDC680] hover:shadow-[0_0_50px_#A259FF90] transition-all duration-300 group relative overflow-hidden"
-              whileHover={{ y: -10, scale: 1.03 }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#0ABDC620] to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse pointer-events-none z-0 rounded-3xl" />
-              <div className="w-36 h-36 mx-auto relative mb-6 rounded-full overflow-hidden shadow-inner border-4 border-[#A259FF30] z-10">
-                <Image
-                  src={member.img}
-                  fill
-                  alt={member.name}
-                  className="object-cover scale-105 transition-transform duration-500 group-hover:scale-110"
-                  priority
-                />
-              </div>
-              <h3 className="text-2xl font-bold text-[#A259FF] z-10 relative tracking-wide drop-shadow-sm uppercase">
-                {member.name}
-              </h3>
-              <p className="text-sm mt-2 text-[#b3b3b3] tracking-widest z-10 relative font-mono">
-                {member.role}
-              </p>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-1 bg-gradient-to-r from-[#A259FF] via-[#0ABDC6] to-[#A259FF] opacity-70 rounded-full blur-sm group-hover:opacity-100 transition-all duration-500 z-10" />
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Team Members */}
-      <section className="px-6 pb-32 max-w-5xl mx-auto">
-        <motion.h2
-          className="text-3xl sm:text-4xl font-bold text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-[#A259FF] to-[#0ABDC6]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          Guerreiros da Nova Geração
-        </motion.h2>
-
-        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {team.map((member, idx) => (
-            <motion.div
-              key={idx}
-              className="bg-[#101010] border border-[#222] rounded-xl p-4 text-center shadow-md hover:shadow-[0_0_20px_#A259FF60] transition-all"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + idx * 0.1 }}
-            >
-              <div className="w-24 h-24 mx-auto mb-4 relative rounded-full overflow-hidden border-2 border-[#A259FF30]">
-                <Image
-                  src="/defaultUser.png"
-                  fill
-                  alt={member.name}
-                  className="object-cover"
-                />
-              </div>
-              <h4 className="text-lg font-semibold text-[#0ABDC6]">{member.name}</h4>
-              <p className="text-sm text-gray-400 font-mono mt-1">{member.role}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA with Original Gradient */}
-      <motion.section
-        className="bg-gradient-to-r from-[#A259FF] to-[#0ABDC6] text-black py-24 px-6 text-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-      >
-        <h2 className="text-4xl md:text-6xl font-extrabold drop-shadow-xl text-black">
-          Junta-te à Revolução da Terra Oculta
-        </h2>
-        <p className="text-lg md:text-xl mt-6 max-w-2xl mx-auto text-black">
-          Explora maravilhas escondidas com tecnologia de mapeamento futurista e experiências imersivas.
+        <p className="mt-4 text-green-300 max-w-xl mx-auto text-sm sm:text-base">
+          Cada mente aqui é uma peça essencial no enigma Terra Oculta. Conheça quem move os sistemas por trás do radar.
         </p>
-        <motion.button
-          onClick={() => router.push("/careers")}
-          className="mt-10 px-8 py-3 rounded-full bg-black text-white font-bold shadow-lg hover:bg-gray-800 transition"
-          whileHover={{ scale: 1.05 }}
-        >
-          Junta-te à Equipa
-        </motion.button>
-      </motion.section>
+      </section>
+
+      {/* Profile Section Inspired by Anduril Style */}
+      <section className="max-w-5xl mx-auto px-4 pb-24">
+        <div className="grid grid-cols-1 sm:grid-cols-3 border-b border-[#1f1f1f]">
+          {people.map((person, index) => (
+            <button
+              key={index}
+              onClick={() => setSelected(index)}
+              className={`text-sm sm:text-base font-semibold uppercase tracking-wide py-4 px-3 border-r border-[#222] transition-all duration-200
+                ${
+                  selected === index
+                    ? "bg-[#A1FF0A] text-black"
+                    : "bg-[#0f0f0f] text-[#A1FF0A] hover:bg-[#181818]"
+                } ${index === people.length - 1 ? "border-r-0" : ""}`}
+            >
+              {person.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="relative w-full h-[400px] sm:h-[500px] bg-black overflow-hidden shadow-xl border-x border-b border-[#1a1a1a]">
+          <Image
+            src={people[selected].img}
+            alt={people[selected].name}
+            fill
+            className="object-cover object-center opacity-90 transition-all duration-500"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
+
+          <div className="absolute bottom-0 left-0 w-full p-6 text-left text-white bg-black/30 backdrop-blur-md">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#A1FF0A] uppercase">
+              {people[selected].name}
+            </h2>
+            <p className="text-sm text-[#C0FFC0] mt-1">{people[selected].role}</p>
+            <p className="text-sm text-gray-300 mt-3 max-w-xl">{people[selected].description}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Values Section Inspired by Anduril Benefits Grid */}
+      <section className="bg-[#0b0b0b] border-t border-[#1f1f1f] py-20 px-6 sm:px-10">
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-lime-300 mb-16">
+          Nossos Valores
+        </h2>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 text-left text-white">
+          {values.map((value, index) => (
+            <div key={index} className="space-y-3 border-t border-[#1e1e1e] pt-4">
+              <div className="text-3xl">{value.icon}</div>
+              <h3 className="text-lg font-bold text-[#A1FF0A]">{value.title}</h3>
+              <p className="text-sm text-gray-300 leading-relaxed">{value.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <Footer />
     </motion.div>

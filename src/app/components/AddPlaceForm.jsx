@@ -52,10 +52,10 @@ export default function AddPlaceForm({ onPlaceAdded }) {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-2xl p-8 bg-white/10 border border-white/20 backdrop-blur-lg rounded-2xl text-white shadow-2xl"
+      className="w-full max-w-3xl p-6 bg-[#010b05] border border-green-800 text-[#33ff33] font-mono"
     >
-      <h2 className="text-3xl font-bold text-center mb-6 text-purple-400 tracking-wide">
-        📍 Adicionar uma nova Localização
+      <h2 className="text-xl sm:text-2xl uppercase font-bold tracking-widest text-center mb-8 border-b border-green-700 pb-2">
+        📍 Adicionar Nova Localização
       </h2>
 
       <input
@@ -65,7 +65,7 @@ export default function AddPlaceForm({ onPlaceAdded }) {
         onChange={handleChange}
         placeholder="Título"
         required
-        className="w-full mb-4 p-4 bg-white/5 border border-white/20 placeholder-white/50 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+        className="w-full mb-4 px-3 py-2 bg-black border border-green-800 placeholder-green-600 text-lime-300 focus:outline-none focus:ring focus:ring-green-700"
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -76,7 +76,7 @@ export default function AddPlaceForm({ onPlaceAdded }) {
           onChange={handleChange}
           placeholder="Latitude"
           required
-          className="p-4 bg-white/5 border border-white/20 text-white placeholder-white/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          className="px-3 py-2 bg-black border border-green-800 text-lime-300 placeholder-green-600 focus:outline-none focus:ring focus:ring-green-700"
         />
         <input
           type="text"
@@ -85,7 +85,7 @@ export default function AddPlaceForm({ onPlaceAdded }) {
           onChange={handleChange}
           placeholder="Longitude"
           required
-          className="p-4 bg-white/5 border border-white/20 text-white placeholder-white/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          className="px-3 py-2 bg-black border border-green-800 text-lime-300 placeholder-green-600 focus:outline-none focus:ring focus:ring-green-700"
         />
       </div>
 
@@ -94,9 +94,9 @@ export default function AddPlaceForm({ onPlaceAdded }) {
         name="imageUrl"
         value={formData.imageUrl}
         onChange={handleChange}
-        placeholder="Url da imagem"
+        placeholder="URL da Imagem"
         required
-        className="w-full mt-4 p-4 bg-white/5 border border-white/20 placeholder-white/50 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+        className="w-full mt-4 px-3 py-2 bg-black border border-green-800 placeholder-green-600 text-lime-300 focus:outline-none focus:ring focus:ring-green-700"
       />
 
       <textarea
@@ -106,19 +106,19 @@ export default function AddPlaceForm({ onPlaceAdded }) {
         placeholder="Descrição"
         required
         rows="4"
-        className="w-full mt-4 p-4 bg-white/5 border border-white/20 placeholder-white/50 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="w-full mt-4 px-3 py-2 bg-black border border-green-800 placeholder-green-600 text-lime-300 focus:outline-none focus:ring focus:ring-green-700"
       />
 
       <button
         type="submit"
         disabled={loading}
-        className={`w-full mt-6 py-3 text-white font-semibold rounded-xl transition-all duration-300 ${
+        className={`w-full mt-6 py-2 uppercase tracking-wide font-semibold text-[#010b05] ${
           loading
-            ? "bg-gray-600 cursor-not-allowed"
-            : "bg-gradient-to-r from-purple-600 via-pink-500 to-indigo-600 hover:shadow-purple-700 hover:scale-105"
-        }`}
+            ? "bg-green-700/40 text-green-100 cursor-not-allowed"
+            : "bg-[#33ff33] hover:bg-green-300 hover:text-black"
+        } transition`}
       >
-        {loading ? "Adding..." : "➕ Adicionar a localização"}
+        {loading ? "A Processar..." : "➕ Adicionar Localização"}
       </button>
     </motion.form>
   );

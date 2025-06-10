@@ -5,21 +5,19 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Navbar from "../components/nav";
 import Footer from "../components/footer";
-import { ThreeBackground } from "../components/Background";
-import PlaceCard from "./PlaceCard";
+import { FiMapPin, FiHeart, FiMessageCircle } from "react-icons/fi";
 
 export default function NovasDescobertas() {
   const [places, setPlaces] = useState([]);
   const [user, setUser] = useState(null);
   const [filter, setFilter] = useState("");
-  const [sortBy, setSortBy] = useState("date"); // "date" | "likes"
+  const [sortBy, setSortBy] = useState("date");
   const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await fetch("/api/auth/me", { credentials: "include" });
-        if (!res.ok) throw new Error();
         const data = await res.json();
         setUser(data.user);
       } catch {
@@ -32,8 +30,8 @@ export default function NovasDescobertas() {
         const res = await fetch("/api/places");
         const data = await res.json();
         setPlaces(data);
-      } catch (error) {
-        console.error("Error fetching places:", error);
+      } catch (err) {
+        console.error("Fetch error:", err);
       }
     };
 
@@ -41,162 +39,112 @@ export default function NovasDescobertas() {
     fetchPlaces();
   }, []);
 
-  const ensureAuthenticated = () => {
-    if (!user || !user.id) {
-      router.push("/login");
-      return false;
-    }
-    return true;
-  };
-
-  const handleLike = async (placeId) => {
-    if (!ensureAuthenticated()) return;
-    try {
-      const res = await fetch("/api/places", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ placeId, userId: user.id, type: "like" }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setPlaces((prev) =>
-          prev.map((p) => (p.id === placeId ? { ...p, likes: (p.likes || 0) + 1 } : p))
-        );
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.error("Like error:", error);
-    }
-  };
-
-  const handleComment = async (placeId, content) => {
-    if (!ensureAuthenticated()) return;
-    try {
-      const res = await fetch("/api/places", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ placeId, userId: user.id, type: "comment", content }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setPlaces((prev) =>
-          prev.map((p) =>
-            p.id === placeId ? { ...p, comments: [...(p.comments || []), data] } : p
-          )
-        );
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.error("Comment error:", error);
-    }
-  };
-
-  const filteredAndSortedPlaces = places
+  const filteredAndSorted = [...places]
     .filter((place) =>
       place.name.toLowerCase().includes(filter.toLowerCase()) ||
       place.description?.toLowerCase().includes(filter.toLowerCase())
     )
     .sort((a, b) => {
       if (sortBy === "likes") {
-        return (b.likes || 0) - (a.likes || 0);
+        return (b.likes?.length || 0) - (a.likes?.length || 0);
       } else {
-        return Number(b.id) - Number(a.id); // Mais recentes primeiro
+        return Number(b.id) - Number(a.id);
       }
     });
-    
 
   return (
     <motion.div
-      className="relative min-h-screen text-white font-sans"
+      className="min-h-screen bg-[#010b05] text-lime-400 font-mono"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      <div className="fixed inset-0 -z-10 bg-black/90">
-        <ThreeBackground />
-      </div>
-
       <Navbar />
 
+      {/* HEADER */}
       <header className="text-center py-12 px-4">
-        <motion.h1
-          className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[#A259FF] to-[#0ABDC6] text-transparent bg-clip-text"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-        >
-          Novas Descobertas
-        </motion.h1>
-        <motion.p
-          className="mt-4 text-gray-400 text-base max-w-xl mx-auto italic"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          [Transmissão Iniciada] — Coordenadas recebidas. Novas anomalias detectadas via satélite.
-        </motion.p>
-
-        {/* Filter and Sort Controls */}
-        <motion.div
-          className="mt-6 max-w-xl mx-auto flex flex-col sm:flex-row gap-4 justify-center"
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <input
-            type="text"
-            placeholder="Filtrar por nome ou descrição..."
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="w-full sm:w-2/3 px-4 py-2 rounded-lg bg-[#1a1a1a] border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#A259FF] transition"
-          />
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="w-full sm:w-1/3 px-4 py-2 rounded-lg bg-[#1a1a1a] border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#0ABDC6] transition"
-          >
-            <option value="date">Mais Recentes</option>
-            <option value="likes">Mais Curtidos</option>
-          </select>
-        </motion.div>
+        <h1 className="text-4xl sm:text-5xl font-bold uppercase tracking-wider text-lime-400">
+          NOVAS <br className="sm:hidden" /> DESCOBERTAS
+        </h1>
+        <p className="text-green-500 text-sm sm:text-base mt-4 max-w-xl mx-auto">
+          Coordenadas recentes detectadas. <br />
+          Feed de anomalias em tempo real.
+        </p>
       </header>
 
-      <section className="px-4 sm:px-6 pb-16 space-y-12 max-w-3xl mx-auto">
-        {filteredAndSortedPlaces.length === 0 ? (
-          <p className="text-center text-gray-500">Nenhum resultado encontrado.</p>
-        ) : (
-          filteredAndSortedPlaces.map((place, index) => (
-            <motion.div
-              key={place.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="rounded-xl overflow-hidden bg-[#111] border border-white/10 shadow-lg"
+      {/* SEARCH + SORT */}
+      <div className="max-w-2xl mx-auto px-4 flex flex-col sm:flex-row items-center gap-4 pb-10">
+        <input
+          type="text"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          placeholder="Buscar por nome ou descrição..."
+          className="w-full flex-1 px-4 py-2 bg-black border border-green-700 rounded-full text-green-400 placeholder-green-600 focus:outline-none focus:ring-2 focus:ring-lime-500"
+        />
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="w-full sm:w-auto px-4 py-2 bg-black border border-green-700 rounded-full text-green-400 focus:outline-none focus:ring-2 focus:ring-lime-500"
+        >
+          <option value="date">Mais Recentes</option>
+          <option value="likes">Mais Curtidos</option>
+        </select>
+      </div>
+
+      {/* FEED */}
+      <main className="max-w-xl mx-auto">
+        {filteredAndSorted.map((place, index) => (
+          <motion.div
+            key={place.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.04 }}
+            className="border-t border-green-800 pb-6"
+          >
+            {/* Title */}
+            <div className="flex items-center gap-2 text-lime-400 text-base font-bold px-4 py-2">
+              <FiMapPin className="text-green-400" />
+              {place.name}
+            </div>
+
+            {/* Image */}
+            <div
+              onClick={() => router.push(`/place/${place.id}`)}
+              className="cursor-pointer"
             >
               <img
                 src={place.imageUrl}
                 alt={place.name}
-                className="w-full h-[400px] object-cover"
+                className="w-full h-auto max-h-[420px] object-cover"
               />
-              <div className="p-6 space-y-4">
-                <h2 className="text-2xl font-bold text-white">{place.name}</h2>
-                <p className="text-sm text-gray-400 whitespace-pre-line">
-                  {place.description?.length > 300
-                    ? place.description.slice(0, 300) + "..."
-                    : place.description}
-                </p>
-                <PlaceCard
-                  place={place}
-                  userId={user?.id}
-                  onLike={handleLike}
-                  onComment={handleComment}
-                />
+            </div>
+
+            {/* Description */}
+            <div className="text-green-400 text-sm px-4 mt-3 whitespace-pre-line leading-relaxed">
+              {place.description?.slice(0, 500)}
+              {place.description?.length > 500 ? "..." : ""}
+            </div>
+
+            {/* Footer: likes/comments */}
+            <div className="flex items-center gap-6 text-green-600 text-sm mt-3 px-4">
+              <div className="flex items-center gap-1">
+                <FiHeart className="text-lg" />
+                {(place.likes?.length || 0)}
               </div>
-            </motion.div>
-          ))
+              <div className="flex items-center gap-1">
+                <FiMessageCircle className="text-lg" />
+                {(place.comments?.length || 0)}
+              </div>
+            </div>
+          </motion.div>
+        ))}
+
+        {filteredAndSorted.length === 0 && (
+          <p className="text-center text-green-600 mt-12">
+            Nenhuma coordenada encontrada com esse filtro.
+          </p>
         )}
-      </section>
+      </main>
 
       <Footer />
     </motion.div>

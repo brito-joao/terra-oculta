@@ -7,7 +7,7 @@ import Image from "next/image";
 import Navbar from "../components/nav";
 import Footer from "../components/footer";
 import { Button } from "@/components/ui/button";
-import { Sparkles, LogOut, PencilLine, User } from "lucide-react";
+import { LogOut, PencilLine, User } from "lucide-react";
 
 export default function ProfileDashboard() {
   const [user, setUser] = useState(null);
@@ -81,33 +81,28 @@ export default function ProfileDashboard() {
     if (res.ok) router.push("/");
   };
 
-  if (loading) return <p className="text-center text-white">Carregando...</p>;
+  if (loading) return <p className="text-center text-lime-400 font-mono mt-10">Carregando...</p>;
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-black via-[#0c0c0f] to-[#0a0a0a] text-white font-sans relative overflow-hidden"
+      className="min-h-screen font-mono overflow-x-hidden"
+      style={{ backgroundColor: "#010b05", color: "#33ff33" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2 }}
     >
       <Navbar />
 
-      {/* Neon Aura */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute w-72 h-72 top-20 left-10 bg-[#A259FF] opacity-20 blur-3xl rounded-full animate-pulse" />
-        <div className="absolute w-72 h-72 bottom-10 right-10 bg-[#0ABDC6] opacity-20 blur-3xl rounded-full animate-pulse" />
-      </div>
-
-      <main className="relative z-10 flex flex-col items-center p-6 pt-28">
+      <main className="max-w-5xl mx-auto px-4 pt-28 pb-16">
         <motion.div
-          className="w-full max-w-5xl bg-[#111111]/80 backdrop-blur-xl border border-[#2f2f2f] rounded-3xl shadow-2xl p-8 space-y-8"
+          className="border border-green-700 bg-black p-6 space-y-6"
           initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.9 }}
+          transition={{ duration: 1 }}
         >
           {/* User Overview */}
           <div className="flex flex-col sm:flex-row items-center gap-6">
-            <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-[#0ABDC6] shadow-[0_0_25px_#0ABDC6]">
+            <div className="relative w-28 h-28 overflow-hidden border border-green-600">
               <Image
                 src={user?.profilePic || "/defaultUser.png"}
                 fill
@@ -119,23 +114,23 @@ export default function ProfileDashboard() {
               {editing ? (
                 <>
                   <input
-                    className="bg-black/20 p-2 rounded-md border border-white/20 text-white"
+                    className="bg-transparent border border-green-700 px-2 py-1 text-lime-300"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                   <input
-                    className="bg-black/20 p-2 rounded-md border border-white/20 text-white"
+                    className="bg-transparent border border-green-700 px-2 py-1 text-lime-300"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </>
               ) : (
                 <>
-                  <h1 className="text-3xl font-bold tracking-tight text-[#A259FF] drop-shadow-md">{name}</h1>
-                  <p className="text-gray-400 text-sm">{email}</p>
+                  <h1 className="text-2xl font-bold tracking-wide text-lime-300">{name}</h1>
+                  <p className="text-sm text-green-500">{email}</p>
                 </>
               )}
-              <div className="flex items-center gap-2 mt-2 text-sm text-[#0ABDC6]">
+              <div className="flex items-center gap-2 text-green-400 mt-1 text-sm">
                 <User className="w-4 h-4" />
                 <span>{role} Tier</span>
               </div>
@@ -144,45 +139,63 @@ export default function ProfileDashboard() {
 
           {editing ? (
             <div className="flex gap-4">
-              <Button className="bg-green-600" onClick={handleSave}>Salvar</Button>
-              <Button className="bg-gray-600" onClick={() => setEditing(false)}>Cancelar</Button>
+              <button
+                onClick={handleSave}
+                className="border border-green-500 px-4 py-2 text-green-300 hover:bg-green-800/20"
+              >
+                Salvar
+              </button>
+              <button
+                onClick={() => setEditing(false)}
+                className="border border-red-500 px-4 py-2 text-red-400 hover:bg-red-800/20"
+              >
+                Cancelar
+              </button>
             </div>
           ) : (
-            <Button className="bg-blue-600" onClick={() => setEditing(true)}>
-              <PencilLine className="mr-2 h-4 w-4" /> Editar Perfil
-            </Button>
+            <button
+              onClick={() => setEditing(true)}
+              className="border border-blue-500 px-4 py-2 text-blue-300 hover:bg-blue-800/20 flex items-center gap-2"
+            >
+              <PencilLine className="w-4 h-4" />
+              Editar Perfil
+            </button>
           )}
 
           {/* Liked Places */}
           <div>
-            <h2 className="text-xl font-semibold text-purple-300 mb-4">🌍 Locais Curtidos</h2>
+            <h2 className="text-lg font-bold text-lime-400 mb-3">🌍 Locais Curtidos</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {liked.length === 0 ? (
-                <p className="text-gray-500">Nenhum local curtido ainda.</p>
+                <p className="text-green-500">Nenhum local curtido ainda.</p>
               ) : (
                 liked.map((place) => (
-                  <div key={place.id} className="bg-[#1a1a1a] p-4 rounded-xl border border-[#2a2a2a]">
-                    <h3 className="text-lg font-bold text-purple-400">{place.name}</h3>
-                    <p className="text-sm text-gray-400 line-clamp-2">{place.description}</p>
+                  <div key={place.id} className="border border-green-700 p-4 bg-black text-sm">
+                    <h3 className="font-bold text-lime-300">{place.name}</h3>
+                    <p className="text-green-500 line-clamp-2">{place.description}</p>
                   </div>
                 ))
               )}
             </div>
           </div>
 
-          {/* Admin + Logout */}
+          {/* Admin Access */}
           {user.role === "ADMIN" && (
-            <Button
-              className="w-full mt-6 bg-purple-600 hover:bg-purple-700"
+            <button
               onClick={() => router.push("/admin")}
+              className="w-full border border-purple-500 text-purple-300 py-2 hover:bg-purple-900/10"
             >
               Acessar Painel de Admin
-            </Button>
+            </button>
           )}
 
-          <Button onClick={handleLogout} className="w-full mt-4 bg-red-500 hover:bg-red-600">
-            <LogOut className="mr-2" /> Sair da Conta
-          </Button>
+          <button
+            onClick={handleLogout}
+            className="w-full border border-red-500 text-red-400 py-2 hover:bg-red-800/10"
+          >
+            <LogOut className="inline-block w-4 h-4 mr-2" />
+            Sair da Conta
+          </button>
         </motion.div>
       </main>
 

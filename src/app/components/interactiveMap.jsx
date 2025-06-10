@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   GoogleMap,
   LoadScript,
   Marker,
   InfoWindow,
-  Autocomplete,
 } from "@react-google-maps/api";
 import { motion } from "framer-motion";
 
@@ -21,36 +20,12 @@ const center = { lat: 20, lng: 0 };
 const mapOptions = {
   disableDefaultUI: true,
   styles: [
-    {
-      featureType: "all",
-      elementType: "labels",
-      stylers: [{ visibility: "off" }],
-    },
-    {
-      featureType: "administrative",
-      elementType: "geometry",
-      stylers: [{ visibility: "off" }],
-    },
-    {
-      featureType: "poi",
-      elementType: "all",
-      stylers: [{ visibility: "off" }],
-    },
-    {
-      featureType: "road",
-      elementType: "all",
-      stylers: [{ visibility: "off" }],
-    },
-    {
-      featureType: "water",
-      elementType: "geometry",
-      stylers: [{ color: "#004643" }],
-    },
-    {
-      featureType: "landscape",
-      elementType: "geometry",
-      stylers: [{ color: "#0f0f0f" }],
-    },
+    { featureType: "all", elementType: "labels", stylers: [{ visibility: "off" }] },
+    { featureType: "administrative", elementType: "geometry", stylers: [{ visibility: "off" }] },
+    { featureType: "poi", elementType: "all", stylers: [{ visibility: "off" }] },
+    { featureType: "road", elementType: "all", stylers: [{ visibility: "off" }] },
+    { featureType: "water", elementType: "geometry", stylers: [{ color: "#004643" }] },
+    { featureType: "landscape", elementType: "geometry", stylers: [{ color: "#0f0f0f" }] },
   ],
 };
 
@@ -60,6 +35,48 @@ export default function InteractiveMap({ places }) {
   const [activePlace, setActivePlace] = useState(null);
   const [mapRef, setMapRef] = useState(null);
   const autocompleteRef = useRef(null);
+
+  useEffect(() => {
+    const styleTagId = "gm-style-fix";
+
+    if (!document.getElementById(styleTagId)) {
+      const style = document.createElement("style");
+      style.id = styleTagId;
+      style.innerHTML = `
+        .gm-style-iw {
+          background: transparent !important;
+          padding: 0 !important;
+          border: none !important;
+          box-shadow: none !important;
+        }
+
+        .gm-style-iw-c {
+          background: transparent !important;
+          padding: 0 !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          overflow: visible !important;
+        }
+
+        .gm-style-iw-d {
+          overflow: visible !important;
+        }
+
+        .gm-style-iw-t::after {
+          display: none !important;
+        }
+
+        .gm-ui-hover-effect {
+          filter: invert(100%) !important;
+        }
+
+        .gm-style .gm-style-iw.gm-style-iw-c {
+          background-color: transparent !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
 
   const onPlaceChanged = () => {
     if (autocompleteRef.current !== null && mapRef !== null) {
@@ -86,7 +103,7 @@ export default function InteractiveMap({ places }) {
             <button
               key={type}
               onClick={() => setMapType(type)}
-              className={`px-4 py-1 text-xs uppercase font-bold rounded border transition-all tracking-widest ${
+              className={`px-4 py-1 text-xs uppercase font-bold border tracking-widest transition-all ${
                 mapType === type
                   ? "bg-[#A1FF0A] text-black border-[#A1FF0A]"
                   : "bg-[#111] text-[#A1FF0A] border-[#333] hover:bg-[#1a1a1a]"
@@ -112,7 +129,7 @@ export default function InteractiveMap({ places }) {
               key={place.id}
               position={{ lat: place.latitude, lng: place.longitude }}
               icon={{
-                url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png", // tactical green
+                url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
                 scaledSize: new window.google.maps.Size(32, 32),
               }}
               onClick={() => setActivePlace(place)}
@@ -121,24 +138,28 @@ export default function InteractiveMap({ places }) {
 
           {activePlace && (
             <InfoWindow
-              position={{ lat: activePlace.latitude, lng: activePlace.longitude }}
+              position={{
+                lat: activePlace.latitude,
+                lng: activePlace.longitude,
+              }}
               onCloseClick={() => setActivePlace(null)}
+              options={{ pixelOffset: new window.google.maps.Size(0, -30) }}
             >
-              <div className="bg-[#0f0f0f] text-[#A1FF0A] w-64 rounded border border-[#A1FF0A] shadow-xl p-4 space-y-2 font-mono">
+              <div className="bg-[#0f0f0f] text-[#A1FF0A] w-64 border border-[#A1FF0A] p-4 font-mono shadow-[0_0_20px_#a1ff0a40]">
                 <img
                   src={activePlace.imageUrl}
                   alt={activePlace.name}
-                  className="rounded w-full h-32 object-cover border border-[#222]"
+                  className="w-full h-32 object-cover border border-[#222]"
                 />
-                <h3 className="text-base font-bold uppercase tracking-wider">
+                <h3 className="text-base font-bold uppercase tracking-wider mt-2">
                   {activePlace.name}
                 </h3>
-                <p className="text-xs text-[#C0FFC0]">
+                <p className="text-xs text-[#C0FFC0] mt-1">
                   {activePlace.description.slice(0, 100)}...
                 </p>
                 <button
                   onClick={() => router.push(`/place/${activePlace.id}`)}
-                  className="mt-2 w-full py-1.5 text-center border border-[#A1FF0A] text-[#0f0f0f] bg-[#A1FF0A] font-semibold rounded hover:opacity-90 transition uppercase text-sm"
+                  className="mt-3 w-full py-1.5 text-center border border-[#A1FF0A] text-[#0f0f0f] bg-[#A1FF0A] font-semibold hover:opacity-90 transition uppercase text-sm"
                 >
                   Access Node
                 </button>

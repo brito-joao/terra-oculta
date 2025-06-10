@@ -37,9 +37,10 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "/", label: "INÍCIO" },
-    { href: "/about", label: "MISSÃO" },
     { href: "/explore", label: "MAPA" },
-    { href: "/finds", label: "REGISTROS" },
+    { href: "/finds", label: "FEED" },
+    { href: "/about", label: "MISSÃO" },
+
   ];
 
   return (
@@ -77,16 +78,15 @@ export default function Navbar() {
         ) : isLoggedIn ? (
           <div
             onClick={handleProfile}
-            className="cursor-pointer border border-green-500 p-[2px] rounded-full hover:shadow-[0_0_8px_#33ff33] transition"
+            className="w-9 h-9 flex items-center justify-center border border-green-500 text-green-300 font-bold text-sm rounded-full cursor-pointer hover:bg-green-900/30 transition"
           >
-            <Image
-              src={user.profilePic || "https://i.imgur.com/3zxQ2si.png"}
-              alt="Perfil"
-              width={36}
-              height={36}
-              className="rounded-full"
-            />
+            {user.email?.split("@")[0]
+              .split(/[.\-_]/)
+              .map((word) => word[0]?.toUpperCase())
+              .join("")
+              .slice(0, 3)}
           </div>
+
         ) : (
           <button
             onClick={handleAuth}
@@ -128,19 +128,14 @@ export default function Navbar() {
               <span className="text-green-500">CARREGANDO...</span>
             ) : isLoggedIn ? (
               <div
-                onClick={() => {
-                  handleProfile();
-                  setMobileMenuOpen(false);
-                }}
-                className="cursor-pointer border border-green-500 p-[2px] rounded-full"
+                onClick={handleProfile}
+                className="w-9 h-9 flex items-center justify-center border border-green-500 text-green-300 font-bold text-sm rounded-full cursor-pointer hover:bg-green-900/30 transition"
               >
-                <Image
-                  src={user.profilePic || "https://i.imgur.com/3zxQ2si.png"}
-                  alt="Perfil"
-                  width={36}
-                  height={36}
-                  className="rounded-full"
-                />
+                {user.email?.split("@")[0]
+                  .split(/[.\-_]/)
+                  .map((word) => word[0]?.toUpperCase())
+                  .join("")
+                  .slice(0, 3)}
               </div>
             ) : (
               <button
