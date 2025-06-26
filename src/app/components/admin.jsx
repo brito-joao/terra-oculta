@@ -65,7 +65,7 @@ export default function AdminPage() {
       transition={{ duration: 1.2 }}
     >
       <h1 className="text-3xl sm:text-4xl font-bold tracking-widest border-b border-green-800 pb-3 mb-10 uppercase">
-        🛸 Painel de Controle – ADMIN
+        Painel de Controle – ADMIN
       </h1>
 
       <p className="text-sm text-green-500 mb-10 border-b border-green-900 pb-2">
@@ -74,19 +74,19 @@ export default function AdminPage() {
 
       {/* Control Sections */}
       <div className="space-y-8">
-        <Section title="👥 Gerir Utilizadores" open={sections.users} onToggle={() => toggle("users")}>
+        <Section title="Gerir Utilizadores" open={sections.users} onToggle={() => toggle("users")}>
           <AdminUserManagement />
         </Section>
 
-        <Section title="💬 Moderar Comentários" open={sections.comments} onToggle={() => toggle("comments")}>
+        <Section title="Moderar Comentários" open={sections.comments} onToggle={() => toggle("comments")}>
           <CommentListAdmin />
         </Section>
 
-        <Section title="➕ Adicionar Nova Localização" open={sections.addPlace} onToggle={() => toggle("addPlace")}>
+        <Section title="Adicionar Nova Localização" open={sections.addPlace} onToggle={() => toggle("addPlace")}>
           <AddPlaceForm />
         </Section>
 
-        <Section title="👤 Criar Novo Admin" open={sections.createAdmin} onToggle={() => toggle("createAdmin")}>
+        <Section title="Criar Novo Admin" open={sections.createAdmin} onToggle={() => toggle("createAdmin")}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input
               type="text"
@@ -115,7 +115,7 @@ export default function AdminPage() {
           </div>
         </Section>
 
-        <Section title="🌍 Ver Localizações" open={sections.places} onToggle={() => toggle("places")}>
+        <Section title="Ver Localizações" open={sections.places} onToggle={() => toggle("places")}>
           <PlaceListAdmin />
         </Section>
       </div>

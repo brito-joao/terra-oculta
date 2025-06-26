@@ -45,7 +45,7 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      className="sticky top-0 z-50 bg-[#010b05] border-b border-green-700 px-6 py-3 flex items-center justify-between font-mono uppercase text-[#33ff33] tracking-widest text-sm"
+      className="sticky top-0 z-50 bg-black border-b border-green-700 px-6 py-3 flex items-center justify-between font-mono uppercase text-[#33ff33] tracking-widest text-sm"
       initial={{ y: -40, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
@@ -90,7 +90,7 @@ export default function Navbar() {
         ) : (
           <button
             onClick={handleAuth}
-            className="border border-green-500 px-4 py-1 rounded hover:bg-green-900/20 transition"
+            className="border border-green-500 px-4 py-1  hover:bg-green-900/20 transition"
           >
             LOGIN
           </button>

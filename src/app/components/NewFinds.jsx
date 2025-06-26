@@ -73,18 +73,18 @@ export default function NovasDescobertas() {
       </header>
 
       {/* SEARCH + SORT */}
-      <div className="max-w-2xl mx-auto px-4 flex flex-col sm:flex-row items-center gap-4 pb-10">
+      <div className="max-w-2xl mx-auto px-4 flex flex-col gap-4 pb-10">
         <input
           type="text"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           placeholder="Buscar por nome ou descrição..."
-          className="w-full flex-1 px-4 py-2 bg-black border border-green-700 rounded-full text-green-400 placeholder-green-600 focus:outline-none focus:ring-2 focus:ring-lime-500"
+          className="w-full px-4 py-2 bg-black border border-green-700 text-green-400 placeholder-green-600 focus:outline-none focus:ring-2 focus:ring-lime-500"
         />
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="w-full sm:w-auto px-4 py-2 bg-black border border-green-700 rounded-full text-green-400 focus:outline-none focus:ring-2 focus:ring-lime-500"
+          className="w-full px-4 py-2 bg-black border border-green-700 text-green-400 focus:outline-none focus:ring-2 focus:ring-lime-500"
         >
           <option value="date">Mais Recentes</option>
           <option value="likes">Mais Curtidos</option>

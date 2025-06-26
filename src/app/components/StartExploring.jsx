@@ -55,19 +55,23 @@ export default function StartExploring() {
 
   return (
     <motion.div
-      className="bg-[#0a0a0a] text-[#A1FF0A] min-h-screen font-mono overflow-hidden"
+      className="bg-[#0a0a0a] text-[#A1FF0A] min-h-screen font-mono overflow-hidden relative"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
       {/* NAVIGATION */}
-      <Navbar />
+      <div className="relative z-50">
+        <Navbar />
+      </div>
 
       {/* INTERACTIVE MAP */}
-      <InteractiveMap places={places} />
+      <div className="relative z-10">
+        <InteractiveMap places={places} />
+      </div>
 
       {/* PLACES LIST */}
-      <section className="px-4 sm:px-6 md:px-12 lg:px-20 py-12 border-t border-[#1f1f1f]">
+      <section className="px-4 sm:px-6 md:px-12 lg:px-20 py-12 border-t border-[#1f1f1f] z-10 relative">
         <motion.h2
           className="text-3xl sm:text-4xl font-bold text-center mb-10 uppercase tracking-wider text-[#A1FF0A]"
           initial={{ opacity: 0 }}
@@ -91,7 +95,7 @@ export default function StartExploring() {
 
       {/* FEATURE SECTION */}
       <motion.section
-        className="p-10 text-center bg-[#101810] border-t border-[#1f1f1f] text-[#A1FF0A] tracking-wide"
+        className="p-10 text-center bg-[#101810] border-t border-[#1f1f1f] text-[#A1FF0A] tracking-wide relative z-10"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}

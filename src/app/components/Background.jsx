@@ -40,10 +40,10 @@ const EarthSphere = () => {
           map={dayTexture}
           color={new THREE.Color(0.3, 0.7, 0.3)}
           emissiveMap={nightTexture}
-          emissiveIntensity={4.5}
+          emissiveIntensity={1.5}
           emissive={new THREE.Color(0.1, 0.9, 0.4)}
-          roughness={0.9}
-          metalness={1.2}
+          roughness={0.8}
+          metalness={.6}
         />
       </mesh>
 
@@ -133,12 +133,12 @@ const Crosshair = () => {
 
 export const ThreeBackground = () => {
   return (
-    <Canvas   camera={{ position: [0, 0, 4.2] }}>
+    <Canvas   camera={{ position: [0, 0, 4.2] }} style={{ background: "black" }} >
       <ambientLight intensity={0.6} />
       <directionalLight position={[5, 3, 3]} intensity={1} color={"#88ffbb"} />
       <group scale={1.15}>
         <EarthSphere />
-        <Crosshair />
+        
       </group>
       <OrbitControls enableZoom={false} />
     </Canvas>

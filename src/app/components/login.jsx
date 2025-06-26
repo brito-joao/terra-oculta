@@ -44,7 +44,7 @@ export default function LoginPage() {
 
   return (
     <motion.div
-      className="bg-[#0A0A0A] min-h-screen text-[#A1FF0A] font-mono flex flex-col"
+      className="bg-black min-h-screen text-[#33ff33] font-mono flex flex-col"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
@@ -54,10 +54,10 @@ export default function LoginPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="bg-[#111] w-full max-w-md p-8 rounded-lg shadow-2xl border border-[#0ABDC6]/30"
+          className="bg-[#0a0a0a] w-full max-w-md p-8 shadow-md border border-green-700"
         >
-          <h2 className="text-3xl font-bold text-center mb-6 uppercase tracking-wider text-[#A1FF0A]">
-            {isSignUp ? "Criar Conta" : "Entrar"}
+          <h2 className="text-3xl font-bold text-center mb-6 uppercase tracking-widest text-[#33ff33]">
+            {isSignUp ? "CRIAR CONTA" : "ENTRAR"}
           </h2>
 
           {error && (
@@ -71,7 +71,7 @@ export default function LoginPage() {
                 placeholder="Nome"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#2d2d2d] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#A1FF0A]/50"
+                className="w-full px-4 py-3 bg-black border border-green-700 text-[#99ff99] placeholder-[#66ff66] focus:outline-none focus:ring-2 focus:ring-[#33ff33]/40"
                 required
               />
             )}
@@ -80,7 +80,7 @@ export default function LoginPage() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#2d2d2d] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#A1FF0A]/50"
+              className="w-full px-4 py-3 bg-black border border-green-700 text-[#99ff99] placeholder-[#66ff66] focus:outline-none focus:ring-2 focus:ring-[#33ff33]/40"
               required
             />
             <input
@@ -88,22 +88,22 @@ export default function LoginPage() {
               placeholder="Senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#2d2d2d] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#A1FF0A]/50"
+              className="w-full px-4 py-3 bg-black border border-green-700 text-[#99ff99] placeholder-[#66ff66] focus:outline-none focus:ring-2 focus:ring-[#33ff33]/40"
               required
             />
             <button
               type="submit"
-              className="w-full py-3 bg-[#A1FF0A] text-black font-bold rounded-md hover:bg-[#c0ff44] transition"
+              className="w-full py-3 bg-[#33ff33] text-black font-bold uppercase hover:bg-[#66ff66] transition-colors"
             >
               {isSignUp ? "Cadastrar" : "Entrar"}
             </button>
           </form>
 
-          <p className="mt-5 text-center text-sm text-gray-400">
+          <p className="mt-5 text-center text-sm text-[#66ff66]">
             {isSignUp ? "Já tem uma conta? " : "Ainda não tem conta? "}
             <span
               onClick={toggleAuthMode}
-              className="text-[#A1FF0A] hover:underline cursor-pointer"
+              className="text-[#33ff33] hover:underline cursor-pointer"
             >
               {isSignUp ? "Entrar" : "Criar Conta"}
             </span>

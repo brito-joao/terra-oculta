@@ -6,12 +6,10 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Navbar from "../components/nav";
 import Footer from "../components/footer";
-import { Button } from "@/components/ui/button";
 import { LogOut, PencilLine, User } from "lucide-react";
 
 export default function ProfileDashboard() {
   const [user, setUser] = useState(null);
-  const [liked, setLiked] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
@@ -30,15 +28,7 @@ export default function ProfileDashboard() {
       setRole(data.user.role);
     };
 
-    const fetchLikedPlaces = async () => {
-      const res = await fetch("/api/user/liked");
-      if (res.ok) {
-        const data = await res.json();
-        setLiked(data);
-      }
-    };
-
-    Promise.all([fetchUser(), fetchLikedPlaces()]).finally(() => setLoading(false));
+    fetchUser().finally(() => setLoading(false));
   }, [router]);
 
   const handleSave = async () => {
@@ -81,7 +71,8 @@ export default function ProfileDashboard() {
     if (res.ok) router.push("/");
   };
 
-  if (loading) return <p className="text-center text-lime-400 font-mono mt-10">Carregando...</p>;
+  if (loading)
+    return <p className="text-center text-lime-400 font-mono mt-10">Carregando...</p>;
 
   return (
     <motion.div
@@ -114,23 +105,23 @@ export default function ProfileDashboard() {
               {editing ? (
                 <>
                   <input
-                    className="bg-transparent border border-green-700 px-2 py-1 text-lime-300"
+                    className="bg-transparent border border-green-700 px-2 py-1 text-[#99ff99]"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                   <input
-                    className="bg-transparent border border-green-700 px-2 py-1 text-lime-300"
+                    className="bg-transparent border border-green-700 px-2 py-1 text-[#99ff99]"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </>
               ) : (
                 <>
-                  <h1 className="text-2xl font-bold tracking-wide text-lime-300">{name}</h1>
-                  <p className="text-sm text-green-500">{email}</p>
+                  <h1 className="text-2xl font-bold tracking-wide text-[#99ff99]">{name}</h1>
+                  <p className="text-sm text-[#66ff66]">{email}</p>
                 </>
               )}
-              <div className="flex items-center gap-2 text-green-400 mt-1 text-sm">
+              <div className="flex items-center gap-2 text-[#66ff66] mt-1 text-sm">
                 <User className="w-4 h-4" />
                 <span>{role} Tier</span>
               </div>
@@ -141,13 +132,13 @@ export default function ProfileDashboard() {
             <div className="flex gap-4">
               <button
                 onClick={handleSave}
-                className="border border-green-500 px-4 py-2 text-green-300 hover:bg-green-800/20"
+                className="border border-green-600 px-4 py-2 text-[#66ff66] hover:bg-green-900/10"
               >
                 Salvar
               </button>
               <button
                 onClick={() => setEditing(false)}
-                className="border border-red-500 px-4 py-2 text-red-400 hover:bg-red-800/20"
+                className="border border-green-700 px-4 py-2 text-[#33ff33] hover:bg-green-900/10"
               >
                 Cancelar
               </button>
@@ -155,35 +146,18 @@ export default function ProfileDashboard() {
           ) : (
             <button
               onClick={() => setEditing(true)}
-              className="border border-blue-500 px-4 py-2 text-blue-300 hover:bg-blue-800/20 flex items-center gap-2"
+              className="border border-green-600 px-4 py-2 text-[#66ff66] hover:bg-green-900/10 flex items-center gap-2"
             >
               <PencilLine className="w-4 h-4" />
               Editar Perfil
             </button>
           )}
 
-          {/* Liked Places */}
-          <div>
-            <h2 className="text-lg font-bold text-lime-400 mb-3">🌍 Locais Curtidos</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {liked.length === 0 ? (
-                <p className="text-green-500">Nenhum local curtido ainda.</p>
-              ) : (
-                liked.map((place) => (
-                  <div key={place.id} className="border border-green-700 p-4 bg-black text-sm">
-                    <h3 className="font-bold text-lime-300">{place.name}</h3>
-                    <p className="text-green-500 line-clamp-2">{place.description}</p>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
           {/* Admin Access */}
           {user.role === "ADMIN" && (
             <button
               onClick={() => router.push("/admin")}
-              className="w-full border border-purple-500 text-purple-300 py-2 hover:bg-purple-900/10"
+              className="w-full border border-green-700 text-[#66ff66] py-2 hover:bg-green-900/10"
             >
               Acessar Painel de Admin
             </button>
@@ -191,7 +165,7 @@ export default function ProfileDashboard() {
 
           <button
             onClick={handleLogout}
-            className="w-full border border-red-500 text-red-400 py-2 hover:bg-red-800/10"
+            className="w-full border border-green-600 text-[#99ff99] py-2 hover:bg-green-900/10"
           >
             <LogOut className="inline-block w-4 h-4 mr-2" />
             Sair da Conta

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 
 export default function PlaceListAdmin() {
@@ -17,7 +16,7 @@ export default function PlaceListAdmin() {
     setFormData({
       name: place.name,
       imageUrl: place.imageUrl,
-      description: place.description
+      description: place.description,
     });
   };
 
@@ -25,7 +24,7 @@ export default function PlaceListAdmin() {
     const res = await fetch(`/api/places/${editingId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
     });
 
     if (res.ok) {
@@ -41,34 +40,54 @@ export default function PlaceListAdmin() {
     <div className="space-y-6">
       {places.map((place) =>
         editingId === place.id ? (
-          <div key={place.id} className="bg-white/5 p-4 rounded-xl space-y-3">
+          <div key={place.id} className="bg-[#000] border border-green-800 p-4 space-y-3 text-lime-300">
             <input
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full p-2 rounded bg-black/20 border border-white/20 text-white"
+              className="w-full px-3 py-2 bg-black border border-green-700 text-lime-300 focus:outline-none placeholder-green-700"
+              placeholder="Nome do Local"
             />
             <input
               value={formData.imageUrl}
               onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-              className="w-full p-2 rounded bg-black/20 border border-white/20 text-white"
+              className="w-full px-3 py-2 bg-black border border-green-700 text-lime-300 focus:outline-none placeholder-green-700"
+              placeholder="URL da Imagem"
             />
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full p-2 rounded bg-black/20 border border-white/20 text-white"
+              className="w-full px-3 py-2 bg-black border border-green-700 text-lime-300 focus:outline-none placeholder-green-700"
+              placeholder="Descrição"
+              rows={4}
             />
-            <div className="flex gap-3">
-              <button onClick={handleSave} className="bg-green-600 px-4 py-2 rounded text-white">Salvar</button>
-              <button onClick={() => setEditingId(null)} className="bg-gray-500 px-4 py-2 rounded text-white">Cancelar</button>
+            <div className="flex gap-4 mt-2">
+              <button
+                onClick={handleSave}
+                className="px-4 py-2 bg-green-900 text-green-300 border border-green-600 hover:bg-green-800 uppercase tracking-wider"
+              >
+                Salvar
+              </button>
+              <button
+                onClick={() => setEditingId(null)}
+                className="px-4 py-2 bg-red-900 text-red-300 border border-red-600 hover:bg-red-800 uppercase tracking-wider"
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         ) : (
-          <div key={place.id} className="flex justify-between items-center bg-white/5 p-4 rounded-xl">
+          <div
+            key={place.id}
+            className="flex justify-between items-center bg-black text-lime-300 border border-green-800 p-4"
+          >
             <div>
-              <p className="font-bold">{place.name}</p>
-              <p className="text-sm text-gray-400">{place.imageUrl}</p>
+              <p className="font-bold text-lime-400">{place.name}</p>
+              <p className="text-sm text-green-600">{place.imageUrl}</p>
             </div>
-            <button onClick={() => handleEdit(place)} className="bg-blue-600 px-4 py-2 rounded text-white">
+            <button
+              onClick={() => handleEdit(place)}
+              className="px-4 py-2 bg-green-900 text-green-300 border border-green-700 hover:bg-green-800 uppercase tracking-wide"
+            >
               Editar
             </button>
           </div>
