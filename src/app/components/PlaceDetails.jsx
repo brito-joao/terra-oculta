@@ -91,13 +91,14 @@ const PlaceDetails = ({ id }) => {
         <img
           src={place.imageUrl}
           alt={place.name}
-          className="w-full h-full object-cover opacity-20"
+          className="w-full h-full object-cover opacity-70"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/80" />
+        {/* LESS DARK OVERLAY */}
+        <div className="absolute inset-0  " />
         <div className="absolute bottom-4 left-6 z-10">
           <button
             onClick={() => setShowMap((prev) => !prev)}
-            className="bg-lime-600 hover:bg-lime-400 text-black font-bold px-4 py-2 rounded-full flex items-center gap-2 text-sm"
+            className="bg-lime-600 hover:bg-lime-400 text-black font-bold px-4 py-2 flex items-center gap-2 text-sm"
           >
             <FiMap />
             {showMap ? "Fechar Mapa" : "Ver Localização"}
@@ -125,7 +126,7 @@ const PlaceDetails = ({ id }) => {
             <button
               onClick={handleLike}
               disabled={isLiked}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-all ${
+              className={`px-4 py-1.5 text-xs font-medium border transition-all ${
                 isLiked
                   ? "bg-lime-700 border-lime-600 text-black"
                   : "bg-black border-lime-500 text-lime-300 hover:bg-lime-500 hover:text-black"
@@ -155,19 +156,19 @@ const PlaceDetails = ({ id }) => {
         {/* Comment Input */}
         <form onSubmit={handleComment} className="space-y-4">
           <div className="flex gap-3 items-start">
-            <div className="w-10 h-10 bg-lime-600/30 rounded-full flex items-center justify-center text-lime-300 font-bold">
+            <div className="w-10 h-10 bg-lime-600/30 flex items-center justify-center text-lime-300 font-bold">
               {userId ? "You" : "?"}
             </div>
             <input
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Deixe um comentário público..."
-              className="flex-1 px-4 py-3 rounded-lg bg-black/40 border border-lime-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-lime-500"
+              className="flex-1 px-4 py-3 bg-black/40 border border-lime-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-lime-500"
             />
           </div>
           <button
             type="submit"
-            className="ml-auto px-6 py-2 bg-lime-500 hover:bg-lime-400 text-black font-bold rounded-full transition"
+            className="ml-auto px-6 py-2 bg-lime-500 hover:bg-lime-400 text-black font-bold transition"
           >
             Comentar
           </button>
@@ -195,7 +196,7 @@ const PlaceDetails = ({ id }) => {
                   transition={{ delay: i * 0.02 }}
                   className="flex items-start gap-3 border-b border-lime-600/10 pb-4"
                 >
-                  <div className="w-9 h-9 bg-[#A259FF]/30 rounded-full flex items-center justify-center font-bold text-lime-300 text-sm">
+                  <div className="w-9 h-9 bg-[#A259FF]/30 flex items-center justify-center font-bold text-lime-300 text-sm">
                     {c.user?.name?.[0] || "A"}
                   </div>
                   <div className="flex flex-col text-sm w-full">

@@ -11,21 +11,21 @@ import { OtherBackground } from "../components/Background";
 const people = [
   {
     name: "Rafael",
-    img: "https://i.imgur.com/h62zdzd.jpeg",
+    img: "https://i.imgur.com/3BiAmVa.png",
     role: "Cruzado Digital",
     description:
       "Com visão afiada e dedicação imbatível, Rafa lidera as incursões digitais com ousadia e precisão. Construtor da ponte entre ideia e execução.",
   },
   {
     name: "João",
-    img: "https://i.imgur.com/J2VyiW5.jpeg",
+    img: "https://i.imgur.com/69medXX.png",
     role: "Estrategista Mestre",
     description:
       "Sempre dois passos à frente, João conecta pontos invisíveis com maestria. Um arquiteto de narrativas e movimentos certeiros.",
   },
   {
     name: "Israel",
-    img: "https://i.imgur.com/JgQ0UwG.jpeg",
+    img: "https://i.imgur.com/fTgHfE0.png",
     role: "Guerreiro da Arte",
     description:
       "Movido por expressão e detalhe, Israel traz alma visual à missão. Um escultor do intangível e defensor da beleza oculta.",
@@ -104,12 +104,12 @@ export default function AboutUsPage() {
           ))}
         </div>
 
-        <div className="relative w-full h-[400px] sm:h-[500px] bg-black overflow-hidden shadow-xl border-x border-b border-[#1a1a1a]">
+        <div className="relative w-[300px] h-[400px] sm:h-[500px] bg-black overflow-hidden shadow-xl border-x border-b border-[#1a1a1a] mx-auto mt-6">
           <Image
             src={people[selected].img}
             alt={people[selected].name}
             fill
-            className="object-cover object-center opacity-90 transition-all duration-500"
+            className="object-contain object-center opacity-90 transition-all duration-500"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />

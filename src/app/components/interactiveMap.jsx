@@ -161,7 +161,7 @@ export default function InteractiveMap({ places }) {
                   onClick={() => router.push(`/place/${activePlace.id}`)}
                   className="mt-3 w-full py-1.5 text-center border border-[#A1FF0A] text-[#0f0f0f] bg-[#A1FF0A] font-semibold hover:opacity-90 transition uppercase text-sm"
                 >
-                  Access Node
+                  Explorar
                 </button>
               </div>
             </InfoWindow>
